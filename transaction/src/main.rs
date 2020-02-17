@@ -73,12 +73,12 @@ fn gen(amount: u64) -> Result<Vec<Transaction>, ()> {
         };
         let pkcs8_bytes = signature::Ed25519KeyPair::generate_pkcs8(&rngc).unwrap();
         let key_pair = signature::Ed25519KeyPair::from_pkcs8(pkcs8_bytes.as_ref()).unwrap();
-        txn.signature = hex::encode(key_pair.sign(msg));
         let peer_public_key_bytes = key_pair.public_key().as_ref();
         txn.sender_key = hex::encode(peer_public_key_bytes);
         txn.hash();
         // Sign the hash
         let msg: &[u8] = txn.hash.as_bytes();
+        txn.signature = hex::encode(key_pair.sign(msg));
         pb.inc(1);
         txns.push(txn);
         i += 1;
