@@ -5,6 +5,10 @@ use cryptonight::cryptonight;
 extern crate rand;
 use rand::Rng;
 use std::time::{Duration, Instant};
+use indicatif::ProgressBar;                                                                                       
+
+static TC:u64 = 200;                                                                                              
+
 
 static tc: u64 = 200;
 
@@ -27,6 +31,8 @@ fn gen(amount: u64) -> Vec<Transaction> {
     let mut i: u64 = 0;
     let mut txns: Vec<Transaction> = vec![];
     let mut rng = rand::thread_rng();
+    let pb = ProgressBar::new(tc);                                                                                
+    println!("Generating {:?} Transactions", TC);                                                                 
     while i < amount {
         let mut txn = Transaction { 
             hash: String::from("hash"),
@@ -43,10 +49,11 @@ fn gen(amount: u64) -> Vec<Transaction> {
             signature: String::from(hash(String::from("sig...".to_owned() + &rng.gen::<u64>().to_string()))),
         };
         txn.hash();
-        println!(" {:?}", i);
+        pb.inc(1);
         txns.push(txn);
         i += 1;
     }
+    pb.finish_with_message("Generated {:?} Transactions.", TC);                                                       
     return txns;
 }
 impl Transaction {
@@ -122,14 +129,14 @@ impl Transaction {
 fn main() {
     println!("Avrio Transaction Benchmark Version 0.1.0");
     println!("Enter Number Of Txns To Generate And Validate");
-    println!("Generating {:?} txns", tc);
-    let txns = gen(tc);
+    println!("Generating {:?} txns", TC);
+    let txns = gen(TC);
     println!("Done");
     let now = Instant::now();
     for tx in txns {
         println!("Tx {:?}, valid: {}", tx.hash,tx.validateTransaction());
     }
-    println!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", tc, now.elapsed().as_millis(), now.elapsed().as_millis() / (tc as u128));
+    println!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed().as_millis() / (tc as u128));
 }
 
 
