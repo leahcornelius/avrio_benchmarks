@@ -129,6 +129,7 @@ impl Transaction {
                 match peer_public_key.verify(msg, hex::decode(&txn.signature.to_owned()).unwrap().as_ref()).unwrap() {
                     () => return true,
                     _ => return false,
+                 }
             }
         }
     return true;
