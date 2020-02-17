@@ -81,7 +81,7 @@ fn gen(amount: u64) -> Result<Vec<Transaction>, ()> {
         txn.signature = hex::encode(key_pair.sign(msg));
         let peer_public_key =
         signature::UnparsedPublicKey::new(&signature::ED25519, peer_public_key_bytes);
-        peer_public_key.verify(msg, hex::decode(txn.signature).unwrap().as_ref()).unwrap();
+        peer_public_key.verify(msg, hex::decode(&txn.signature.to_owned()).unwrap().as_ref()).unwrap();
         pb.inc(1);
         txns.push(txn);
         i += 1;
