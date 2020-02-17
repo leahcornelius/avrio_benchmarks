@@ -113,11 +113,14 @@ impl Transaction {
         }
         if self.access_key != self.sender_key {
             if  0 > self.amount {
+                println!("Ammount cannot be under 0");
                 return false;
             } else if self.hashReturn() != self.hash {
+                println!("Bad Hash");
                 return false;
             }
             else if self.extra.len() > 100 {
+                println!("Extra Too Big");
                 return false;
             }
              else {
