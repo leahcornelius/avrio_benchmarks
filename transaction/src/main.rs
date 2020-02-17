@@ -7,7 +7,7 @@ use rand::Rng;
 use std::time::{Duration, Instant};
 use indicatif::ProgressBar;                                                                                       
 
-static TC:u64 = 20;                                                                                              
+static TC:u64 = 200;                                                                                              
 
 fn main() {
     println!("Avrio Transaction Benchmark Version 0.1.0");
