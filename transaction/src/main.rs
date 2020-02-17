@@ -134,8 +134,8 @@ fn main() {
     println!("Done");
     let now = Instant::now();
     for tx in txns {
-        let out = "Tx {:?}, valid: {}", tx.hash,tx.validateTransaction();
-        println!("Tx {:?}, valid: {}", tx.hash,tx.validateTransaction());
+        let out = "Tx " + tx.hash + " valid: " + tx.validateTransaction();
+        println!("{:?}", out);
         for _ in 0..=out.len() {
             print!("{}", (8u8 as char));
         }
