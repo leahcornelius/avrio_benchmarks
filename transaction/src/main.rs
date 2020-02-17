@@ -118,7 +118,7 @@ impl Transaction {
 }                                                                     
 
 fn main() {
-    let tc: u64 = 100;;
+    let tc: u64 = 100000;
     println!("Avrio Transaction Benchmark Version 0.1.0");
     println!("Enter Number Of Txns To Generate And Validate");
     println!("Generating {:?} txns", tc);
