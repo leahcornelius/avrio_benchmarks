@@ -6,6 +6,8 @@ extern crate rand;
 use rand::Rng;
 use std::time::{Duration, Instant};
 
+static tc: u64 = 200;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Transaction {
     pub hash: String,
@@ -118,7 +120,6 @@ impl Transaction {
 }                                                                     
 
 fn main() {
-    let tc: u64 = 100000;
     println!("Avrio Transaction Benchmark Version 0.1.0");
     println!("Enter Number Of Txns To Generate And Validate");
     println!("Generating {:?} txns", tc);
