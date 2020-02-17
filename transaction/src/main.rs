@@ -134,7 +134,11 @@ fn main() {
     println!("Done");
     let now = Instant::now();
     for tx in txns {
+        let out = Tx {:?}, valid: {}", tx.hash,tx.validateTransaction();
         println!("Tx {:?}, valid: {}", tx.hash,tx.validateTransaction());
+        for _ in 0..=out.len() {
+            print!("{}", (8u8 as char));
+        }
     }
     println!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed().as_millis() / (tc as u128));
 }
