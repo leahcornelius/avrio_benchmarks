@@ -78,7 +78,7 @@ fn gen(amount: u64) -> Result<Vec<Transaction>, ()> {
         let msg: &[u8] = txn.hash.as_bytes();
         txn.signature = hex::encode(key_pair.sign(msg));
         let peer_public_key_bytes = key_pair.public_key().as_ref();
-        /*txn.sender_key = hex::encode*/ println!("{:?}",(signature::UnparsedPublicKey::new(&signature::ED25519, peer_public_key_bytes));
+        /*txn.sender_key = hex::encode*/ println!("{:?}",(signature::UnparsedPublicKey::new(&signature::ED25519, peer_public_key_bytes)));
 
         pb.inc(1);
         txns.push(txn);
