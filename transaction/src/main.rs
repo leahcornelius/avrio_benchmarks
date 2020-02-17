@@ -9,8 +9,23 @@ use indicatif::ProgressBar;
 
 static TC:u64 = 200;                                                                                              
 
+fn main() {
+    println!("Avrio Transaction Benchmark Version 0.1.0");
+    println!("Enter Number Of Txns To Generate And Validate");
+    println!("Generating {:?} txns", TC);
+    let txns = gen(TC);
+    println!("Done");
+    let now = Instant::now();
+    for tx in txns {
+        let out = "Tx ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((tx.validateTransaction() as i32).to_string());
+        println!("{:?}", out);
+        for _ in 0..=out.len() {
+            print!("{}", (8u8 as char));
+        }
+    }
+    println!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed().as_millis() / (tc as u128));
+}
 
-static tc: u64 = 200;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Transaction {
@@ -125,26 +140,6 @@ impl Transaction {
         }
     }
 }                                                                     
-
-fn main() {
-    println!("Avrio Transaction Benchmark Version 0.1.0");
-    println!("Enter Number Of Txns To Generate And Validate");
-    println!("Generating {:?} txns", TC);
-    let txns = gen(TC);
-    println!("Done");
-    let now = Instant::now();
-    for tx in txns {
-        let out = "Tx ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((tx.validateTransaction() as i32).to_string());
-        println!("{:?}", out);
-        for _ in 0..=out.len() {
-            print!("{}", (8u8 as char));
-        }
-    }
-    println!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed().as_millis() / (tc as u128));
-}
-
-
-
 
 fn hashBytes(asbytes: Vec<u8>) -> String{;
     unsafe {
