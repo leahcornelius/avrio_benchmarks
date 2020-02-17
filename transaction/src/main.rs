@@ -7,7 +7,7 @@ use rand::Rng;
 use std::time::{Duration, Instant};
 use indicatif::ProgressBar;                                                                                       
 use ring::{
-    rand,
+    rand as randc,
     signature::{self, KeyPair},
 };
 
@@ -53,38 +53,39 @@ fn gen(amount: u64) -> Result<Vec<Transaction>, ring::error> {
     let mut i: u64 = 0;
     let mut txns: Vec<Transaction> = vec![];
     let mut rng = rand::thread_rng();
+    let rngc = randc::SystemRandom::new();
     let pb = ProgressBar::new(TC);                                                                                
     println!("Generating {:?} Transactions", TC);                                                                 
     while i < amount {
         let mut txn = Transaction { 
-            hash: String::from("hash"),
+            hash: String::from(""),
             amount: rng.gen(), 
             extra: String::from(""), 
             flag: 'n', 
-            sender_key: String::from("SK"),
+            sender_key: String::from(""),
             receive_key: (hash(String::from("rc".to_owned() + &rng.gen::<u64>().to_string()))),
-            access_key: (hash(String::from("sk".to_owned() + &rng.gen::<u64>().to_string()))),
+            access_key: String::from(""),
             gas_price: rng.gen::<u16>() as u64,
             max_gas: rng.gen::<u16>() as u64,
             gas: rng.gen::<u16>() as u64,
             nonce: rng.gen(),
-            signature: String::from("signature"),
+            signature: String::from(""),
         };
         txn.hash();
-        let pkcs8_bytes = signature::Ed25519KeyPair::generate_pkcs8(&rng)?;
+        let pkcs8_bytes = signature::Ed25519KeyPair::generate_pkcs8(&rngc)?;
         let key_pair = signature::Ed25519KeyPair::from_pkcs8(pkcs8_bytes.as_ref())?;
         // Sign the hash
         let msg: &[u8] = txn.hash.as_bytes();
-        txn.signature = key_pair.sign(msg).to_string();
+        txn.signature = he::encode(key_pair.sign(msg));
         let peer_public_key_bytes = key_pair.public_key().as_ref();
-        txn.sender_key = signature::UnparsedPublicKey::new(&signature::ED25519, peer_public_key_bytes).to_string();
+        txn.sender_key = hex::encode(signature::UnparsedPublicKey::new(&signature::ED25519, peer_public_key_bytes));
 
         pb.inc(1);
         txns.push(txn);
         i += 1;
     }
     pb.finish_with_message("Generated Transactions.");                                                       
-    return ok(txns);
+    return Ok(txns);
 }
 impl Transaction {
 /*    fn typeTransaction(&self) -> String {
