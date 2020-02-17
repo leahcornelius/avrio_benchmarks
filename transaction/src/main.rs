@@ -16,16 +16,16 @@ fn main() {
     let txns = gen(TC);
     println!("Done");
     let now = Instant::now();
-    let mut i:u64 = 1;
+    let mut i:u64 = 0;
     for tx in txns {
         i += 1;
-        let out = "Tx ".to_owned() + &i.to_string()  + "/".to_owned() + &TC.to_string() + " Hash: ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((tx.validateTransaction() as i32).to_string());
+        let out = "Tx ".to_owned() + &i.to_string()  + &"/".to_owned() + TC.to_string() + &" Hash: ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((tx.validateTransaction() as i32).to_string());
         print!("{}", out);
         for _ in 0..=out.len() {
             print!("{}", (8u8 as char));
         }
     }
-    println("");
+    println!("");
     println!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed().as_millis() / (TC as u128));
 }
 
