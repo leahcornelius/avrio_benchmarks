@@ -7,6 +7,7 @@ use rand::Rng;
 use std::time::{Duration, Instant};
 use indicatif::ProgressBar;                                                                                       
 use ring::{
+    rand,
     signature::{self, KeyPair},
 };
 
@@ -48,7 +49,7 @@ pub struct Transaction {
     pub nonce: u64,
     pub signature: String,
 }
-fn gen(amount: u64) -> Result<Vec<Transaction>, ()> {
+fn gen(amount: u64) -> Result<Vec<Transaction>, ring::error> {
     let mut i: u64 = 0;
     let mut txns: Vec<Transaction> = vec![];
     let mut rng = rand::thread_rng();
@@ -60,7 +61,7 @@ fn gen(amount: u64) -> Result<Vec<Transaction>, ()> {
             amount: rng.gen(), 
             extra: String::from(""), 
             flag: 'n', 
-            sender_key: String:;from("SK"),
+            sender_key: String::from("SK"),
             receive_key: (hash(String::from("rc".to_owned() + &rng.gen::<u64>().to_string()))),
             access_key: (hash(String::from("sk".to_owned() + &rng.gen::<u64>().to_string()))),
             gas_price: rng.gen::<u16>() as u64,
@@ -83,7 +84,7 @@ fn gen(amount: u64) -> Result<Vec<Transaction>, ()> {
         i += 1;
     }
     pb.finish_with_message("Generated Transactions.");                                                       
-    return txns;
+    return ok(txns);
 }
 impl Transaction {
 /*    fn typeTransaction(&self) -> String {
