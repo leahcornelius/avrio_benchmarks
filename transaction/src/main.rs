@@ -49,7 +49,7 @@ pub struct Transaction {
     pub nonce: u64,
     pub signature: String,
 }
-fn gen(amount: u64) -> Result<Vec<Transaction>, ring::error> {
+fn gen(amount: u64) -> Result<Vec<Transaction>, ()> {
     let mut i: u64 = 0;
     let mut txns: Vec<Transaction> = vec![];
     let mut rng = rand::thread_rng();
@@ -72,11 +72,11 @@ fn gen(amount: u64) -> Result<Vec<Transaction>, ring::error> {
             signature: String::from(""),
         };
         txn.hash();
-        let pkcs8_bytes = signature::Ed25519KeyPair::generate_pkcs8(&rngc)?;
-        let key_pair = signature::Ed25519KeyPair::from_pkcs8(pkcs8_bytes.as_ref())?;
+        let pkcs8_bytes = signature::Ed25519KeyPair::generate_pkcs8(&rngc);
+        let key_pair = signature::Ed25519KeyPair::from_pkcs8(pkcs8_bytes.as_ref());
         // Sign the hash
         let msg: &[u8] = txn.hash.as_bytes();
-        txn.signature = he::encode(key_pair.sign(msg));
+        txn.signature = hex::encode(key_pair.sign(msg));
         let peer_public_key_bytes = key_pair.public_key().as_ref();
         txn.sender_key = hex::encode(signature::UnparsedPublicKey::new(&signature::ED25519, peer_public_key_bytes));
 
