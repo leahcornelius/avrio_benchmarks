@@ -129,7 +129,7 @@ impl Transaction {
                  let peer_public_key_bytes = hex::decode(&self.sender_key.to_owned()).unwrap();
                  let peer_public_key =
                     signature::UnparsedPublicKey::new(&signature::ED25519, peer_public_key_bytes);
-                match peer_public_key.verify(self.hash.as_bytes(), &hex::decode(&txn.signature.to_owned())).unwrap() {
+                match peer_public_key.verify(self.hash.as_bytes(), &hex::decode(&(self.signature).to_owned())).unwrap() {
                     () => return true,
                     _ => return false,
                  }
