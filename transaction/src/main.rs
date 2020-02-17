@@ -53,7 +53,7 @@ fn gen(amount: u64) -> Vec<Transaction> {
         txns.push(txn);
         i += 1;
     }
-    pb.finish_with_message("Generated {:?} Transactions.", TC);                                                       
+    pb.finish_with_message("Generated Transactions.");                                                       
     return txns;
 }
 impl Transaction {
