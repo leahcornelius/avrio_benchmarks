@@ -11,7 +11,7 @@ use ring::{
     signature::{self, KeyPair},
 };
 
-static TC:u64 = 200;                                                                                              
+static TC:u64 = 2000;                                                                                              
 
 fn main() {
     println!("Avrio Transaction Benchmark Version 0.1.0");
