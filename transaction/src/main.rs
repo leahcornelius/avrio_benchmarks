@@ -16,7 +16,7 @@ fn main() {
     println!("Avrio Transaction Benchmark Version 0.1.0");
     println!("Enter Number Of Txns To Generate And Validate");
     println!("Generating {:?} txns", TC);
-    let txns = gen(TC);
+    let txns = gen(TC).unwrap();
     println!("Done");
     let now = Instant::now();
     let mut i:u64 = 0;
@@ -48,7 +48,7 @@ pub struct Transaction {
     pub nonce: u64,
     pub signature: String,
 }
-fn gen(amount: u64) -> Vec<Transaction> {
+fn gen(amount: u64) -> Result<Vec<Transaction>, ()> {
     let mut i: u64 = 0;
     let mut txns: Vec<Transaction> = vec![];
     let mut rng = rand::thread_rng();
@@ -60,24 +60,23 @@ fn gen(amount: u64) -> Vec<Transaction> {
             amount: rng.gen(), 
             extra: String::from(""), 
             flag: 'n', 
-            sender_key: ("SK"),
+            sender_key: String:;from("SK"),
             receive_key: (hash(String::from("rc".to_owned() + &rng.gen::<u64>().to_string()))),
             access_key: (hash(String::from("sk".to_owned() + &rng.gen::<u64>().to_string()))),
             gas_price: rng.gen::<u16>() as u64,
             max_gas: rng.gen::<u16>() as u64,
             gas: rng.gen::<u16>() as u64,
             nonce: rng.gen(),
-            signature: String::from("signature");
+            signature: String::from("signature"),
         };
         txn.hash();
         let pkcs8_bytes = signature::Ed25519KeyPair::generate_pkcs8(&rng)?;
         let key_pair = signature::Ed25519KeyPair::from_pkcs8(pkcs8_bytes.as_ref())?;
         // Sign the hash
         let msg: &[u8] = txn.hash.as_bytes();
-        txn.signature = String::from(key_pair.sign(msg));
+        txn.signature = key_pair.sign(msg).to_string();
         let peer_public_key_bytes = key_pair.public_key().as_ref();
-        txn.sender_key =
-            String::from(signature::UnparsedPublicKey::new(&signature::ED25519, peer_public_key_bytes));
+        txn.sender_key = signature::UnparsedPublicKey::new(&signature::ED25519, peer_public_key_bytes).to_string();
 
         pb.inc(1);
         txns.push(txn);
