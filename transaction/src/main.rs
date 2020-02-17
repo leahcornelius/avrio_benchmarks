@@ -18,12 +18,12 @@ fn main() {
     let now = Instant::now();
     for tx in txns {
         let out = "Tx ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((tx.validateTransaction() as i32).to_string());
-        println!("{:?}", out);
+        print!("{}", out);
         for _ in 0..=out.len() {
             print!("{}", (8u8 as char));
         }
     }
-    println!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed().as_millis() / (tc as u128));
+    println!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed().as_millis() / (TC as u128));
 }
 
 
@@ -46,7 +46,7 @@ fn gen(amount: u64) -> Vec<Transaction> {
     let mut i: u64 = 0;
     let mut txns: Vec<Transaction> = vec![];
     let mut rng = rand::thread_rng();
-    let pb = ProgressBar::new(tc);                                                                                
+    let pb = ProgressBar::new(TC);                                                                                
     println!("Generating {:?} Transactions", TC);                                                                 
     while i < amount {
         let mut txn = Transaction { 
