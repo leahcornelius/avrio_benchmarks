@@ -21,7 +21,7 @@ fn main() {
     let mut trans_count:u64 = 1;
     loop {
     trans_count += 1;
-    const TC: u64 = trans_count;
+    let TC: u64 = trans_count;
     info!("Generating {:?} txns", TC);
     let txns = gen(TC).unwrap();
     info!("Done");
@@ -68,8 +68,8 @@ fn gen(amount: u64) -> Result<Vec<Transaction>, ()> {
     let mut txns: Vec<Transaction> = vec![];
     let mut rng = rand::thread_rng();
     let rngc = randc::SystemRandom::new();
-    let pb = ProgressBar::new(TC);                                                                                
-    info!("Generating {:?} Transactions", TC);                                                                 
+    let pb = ProgressBar::new(amount);                                                                                
+    info!("Generating {:?} Transactions", amount);                                                                 
     while i < amount {
         let mut txn = Transaction { 
             hash: String::from(""),
