@@ -26,11 +26,10 @@ fn main() {
     info!("Done");
     let now = Instant::now();
     let mut i:u64 = 0;
-    txns.par_iter() 
+    for tx in txns
         .for_each(|tx| {
-        //i += 1;
+        i += 1;
         let result:i32 = tx.validateTransaction() as i32;
-            /*
         let out: String;
         if result == 1 {
             out = "Tx ".to_owned() + &i.to_string()  + &"/".to_owned() + &TC.to_string() + &" Hash: ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((result).to_string());
@@ -41,10 +40,10 @@ fn main() {
         }
         for _ in 0..=out.len() {
             print!("{}", (8u8 as char));
-        }*/
-    });
+        }
+    }
     println!("");
-    info!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed().as_millis() / (TC as u128));
+    info!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed() / (TC as u128));
 }
 
 
