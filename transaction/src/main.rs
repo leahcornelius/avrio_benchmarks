@@ -59,7 +59,7 @@ fn main() {
         let t = (now.elapsed().as_millis() / 1000) as u64;
         let tps = (((TC) as f64)/ (now.elapsed().as_secs() as f64));
     info!("Validated {:?} Transactions In {:?} Secconds. {:?} TPS", TC, t, tps);
-    info!("{:?}", write_to_csv(TC, t, tps, writer).unwrap());
+    info!("{:?}", write_to_csv(TC, t, tps).unwrap());
     }
 }
 
