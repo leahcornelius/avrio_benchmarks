@@ -98,7 +98,9 @@ fn main() {
   info!("Config Test Version 0.1.0"); 
   let conf = Config::default();
   conf.create().unwrap();
-  info!("{}", config().state.to_string());
+    for x in config() {
+        info!("{:?}", x);
+    }
 }
 
 impl Config {
