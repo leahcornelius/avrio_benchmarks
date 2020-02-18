@@ -38,13 +38,13 @@ pub struct Config {
 
 pub fn config() -> Config {
     let mut file = File::open("node.conf").unwrap_or_else(|e| {
-        errror!("Failed to Open Config file: {}", e);
+        warn!("Failed to Open Config file: {}", e);
         panic!();
     });
     let mut data: String = String::from("");
     file.read_to_string(&mut data).unwrap();
     let conf: Config = serde_json::from_str(&data).unwrap_or_else(|e| {
-        error!("Failed To Deserilise Config: {}", e);
+        warn!("Failed To Deserilise Config: {}", e);
         panic!();
     });
     return conf;
@@ -65,12 +65,12 @@ impl Config {
     }*/
     pub fn create(&self) -> io::Result<()> { // create file
         let mut file = File::create("node.conf")?;
-        file.write_all(serde_json::to_string(&conf).unwrap().as_bytes())?;
+        file.write_all(serde_json::to_string(self).unwrap().as_bytes())?;
         Ok(())
     }
     pub fn save(&self) -> io::Result<()> { // save to exisiting/ update
         let mut file = File::open("node.conf")?;
-        file.write_all(serde_json::to_string(&conf).unwrap().as_bytes())?;
+        file.write_all(serde_json::to_string(self).unwrap().as_bytes())?;
         Ok(())
     }
 }
