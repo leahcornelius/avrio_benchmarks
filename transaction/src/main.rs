@@ -26,8 +26,7 @@ fn main() {
     info!("Done");
     let now = Instant::now();
     let mut i:u64 = 0;
-    for tx in txns
-        .for_each(|tx| {
+    for tx in txns {
         i += 1;
         let result:i32 = tx.validateTransaction() as i32;
         let out: String;
