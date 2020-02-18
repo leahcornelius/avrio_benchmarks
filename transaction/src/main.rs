@@ -18,7 +18,7 @@ extern crate csv;
 use std::error::Error;
 use csv::Writer;
                                                                                               
-fn write_to_csv(tc: u64, t: u64, tps: f64, wtr: csv::Writer) -> Result<String, Box<dyn Error>> {
+fn write_to_csv(tc: u64, t: u64, tps: f64, wtr: Writer) -> Result<String, Box<dyn Error>> {
     // When writing records without Serde, the header record is written just
     // like any other record.
     wtr.write_record(&["tc", "t", "tps"])?;
