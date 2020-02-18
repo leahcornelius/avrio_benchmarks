@@ -18,7 +18,7 @@ extern crate simple_logger;
 fn main() {
     simple_logger::init_with_level(log::Level::Info).unwrap();
     info!("Avrio Transaction Benchmark Version 0.1.0");
-    let mut trans_count:u64 = 9;
+    let mut trans_count:u64 = 100;
     loop {
     trans_count += 1;
     let TC: u64 = trans_count;
