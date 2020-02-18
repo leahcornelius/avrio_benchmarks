@@ -28,7 +28,7 @@ fn main() {
     let mut i:u64 = 0;
     txns.par_iter() 
         .for_each(|tx| {
-        i += 1;
+        //i += 1;
         let result:i32 = tx.validateTransaction() as i32;
         let out: String;
         if result == 1 {
