@@ -19,7 +19,7 @@ use std::error::Error;
 use csv::Writer;
                                                                                               
 fn write_to_csv(tc: u64, t: u64, tps: f64) -> Result<String, Box<dyn Error>> {
-    let mut wtr = csv::Writer::from_path("plot.csv");
+    let mut wtr = csv::Writer::from_path("plot.csv").unwrap();
     // When writing records without Serde, the header record is written just
     // like any other record.
     wtr.write_record(&["tc", "t", "tps"])?;
