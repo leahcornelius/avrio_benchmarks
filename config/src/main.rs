@@ -58,7 +58,7 @@ impl Default for Config {
         Config
         {
              version_major: 0,
-             version_breaking: 0
+             version_breaking: 0,
              version_minor: 1,
              coin_name: String::from("Avrio"),
              node_drop_off_threshold: 30,
@@ -81,7 +81,7 @@ impl Default for Config {
                  0x61, 0x76, 0x72, 0x69, 0x6f, 0x20, 0x6e, 0x6f, 0x6f, 0x64, 0x6c, 0x65,
              ],
              node_type: 'n',
-             identitiy: String:;from(""),
+             identitiy: String::from(""),
              key_file_path: "wallet.keys".to_string(),
              log_level: 2, // 0,1,2,3,4,5 trace, debug, info, warn, error, fatal respectivly
              min_intrest: 0.5,
