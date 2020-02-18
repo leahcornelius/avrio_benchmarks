@@ -14,6 +14,7 @@ rand = "0.7.3"
 indicatif = "0.14.0"
 ring = "0.16.11"
 simple_logger = "1.5.0"
+log = "0.4"
 csv = "1.1"
 [package.metadata.deb]
 extended-description = "Generates A Large Number of Transactions and validates them. Calculates the TPS of your computer"
