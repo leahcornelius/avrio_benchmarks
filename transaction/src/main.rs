@@ -42,7 +42,7 @@ fn main() {
         }
     }
     println!("");
-    info!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed() / (TC as u32));
+    info!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis() / 1000, now.elapsed() / (TC as u32));
 }
 
 
