@@ -14,7 +14,7 @@ use ring::{
 extern crate log;
 extern crate simple_logger;
 
-static TC:u64 = 2000;                                                                                              
+static TC:u64 = 300;                                                                                              
 
 fn main() {
     simple_logger::init_with_level(log::Level::Info).unwrap();
