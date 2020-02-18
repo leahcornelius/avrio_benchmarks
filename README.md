@@ -16,3 +16,5 @@ cargo run -p benchmark_name
 ```
 eg
 ```cargo run -p transaction```
+
+Wan't to see a diffrent aspect of the code benchmarked, tested or checked here? Open an issue asking for it to be added and i will see wht i can do. Alternativly if you know rust and can code it your self PR are allways welcome!
