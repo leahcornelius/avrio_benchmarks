@@ -17,7 +17,7 @@ extern crate simple_logger;
 static TC:u64 = 2000;                                                                                              
 
 fn main() {
-    simple_logger::init_with_level(log::Level::Warn).unwrap();
+    simple_logger::init_with_level(log::Level::Info).unwrap();
     info!("Avrio Transaction Benchmark Version 0.1.0");
     info!("Generating {:?} txns", TC);
     let txns = gen(TC).unwrap();
@@ -65,7 +65,7 @@ fn gen(amount: u64) -> Result<Vec<Transaction>, ()> {
     let mut rng = rand::thread_rng();
     let rngc = randc::SystemRandom::new();
     let pb = ProgressBar::new(TC);                                                                                
-    println!("Generating {:?} Transactions", TC);                                                                 
+    info!("Generating {:?} Transactions", TC);                                                                 
     while i < amount {
         let mut txn = Transaction { 
             hash: String::from(""),
