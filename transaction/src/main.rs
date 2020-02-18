@@ -13,10 +13,23 @@ use ring::{
 #[macro_use]
 extern crate log;
 extern crate simple_logger;
+extern crate csv;
+
+use std::error::Error;
+use csv::Writer;
                                                                                               
+fn write_to_csv(tc: u64, t: u64, tps, f64, wtr: csv::Writer) -> Result<String, Box<dyn Error>> {
+    // When writing records without Serde, the header record is written just
+    // like any other record.
+    wtr.write_record(&["tc", "t", "tps"])?;
+    wtr.write_record(&[tc.to_string(), t.to_string(), tps.to_string()])?;
+    wtr.flush()?;
+    Ok("Wrote to csv")
+}
 
 fn main() {
     simple_logger::init_with_level(log::Level::Info).unwrap();
+    let mut writer = csv::Writer::from_path("plot.csv");
     info!("Avrio Transaction Benchmark Version 0.1.0");
     let mut trans_count:u64 = 100;
     loop {
@@ -43,8 +56,10 @@ fn main() {
         }
     }
     println!("");
-    info!("Validated {:?} Transactions In {:?} Secconds. {:?} TPS", TC, now.elapsed().as_millis() +1 / 1000, (((TC) as f64)/ (now.elapsed().as_secs() as f64)));
-
+        let t = now.elapsed().as_millis() / 1000;
+        let tps = (((TC) as f64)/ (now.elapsed().as_secs() as f64));
+    info!("Validated {:?} Transactions In {:?} Secconds. {:?} TPS", TC, t, tps);
+    info!(write_to_csv(TC, t, tps, writer).unwrap());
     }
 }
 
