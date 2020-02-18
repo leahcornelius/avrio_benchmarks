@@ -89,7 +89,7 @@ impl Default for Config {
              max_reward: 25000,
              min_vote: 65, // min vote to not be banned
              probatory_epoch_count: 10,
-        };
+        }
     }
 }
 
