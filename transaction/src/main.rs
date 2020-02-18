@@ -19,15 +19,16 @@ use std::error::Error;
 use csv::Writer;
                                                                                               
 fn write_to_csv(tc: u64, t: u64, tps: f64) -> Result<String, Box<dyn Error>> {
-    let mut wtr = csv::Writer::from_path("plot.csv").unwrap();
+        let file = OpenOptions::new().append(true).open("foo.txt");
+    let mut wtr = csv::Writer::from_writer(file);
     wtr.write_record(&[tc.to_string(), t.to_string(), tps.to_string()])?;
     wtr.flush()?;
     Ok("Wrote to csv".to_string())
 }
 
 fn main() {
-    let file = OpenOptions::new().append(true).open("foo.txt");
-    let mut wtr = csv::Writer::from_writer(file).unwrap();
+        let file = OpenOptions::new().append(true).open("foo.txt");
+    let mut wtr = csv::Writer::from_writer(file);
     // When writing records without Serde, the header record is written just
     // like any other record.
     wtr.write_record(&["tc", "t", "tps"]).unwrap();
