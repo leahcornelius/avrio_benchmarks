@@ -5,32 +5,42 @@ use cryptonight::cryptonight;
 extern crate rand;
 use rand::Rng;
 use std::time::{Duration, Instant};
-use indicatif::ProgressBar;                                                                                       
+use indicatif::ProgressBar;
 use ring::{
     rand as randc,
     signature::{self, KeyPair},
 };
+#[macro_use]
+extern crate log;
+extern crate simple_logger;
 
 static TC:u64 = 2000;                                                                                              
 
 fn main() {
-    println!("Avrio Transaction Benchmark Version 0.1.0");
-    println!("Enter Number Of Txns To Generate And Validate");
-    println!("Generating {:?} txns", TC);
+    simple_logger::init_with_level(log::Level::Warn).unwrap();
+    info!("Avrio Transaction Benchmark Version 0.1.0");
+    info!("Generating {:?} txns", TC);
     let txns = gen(TC).unwrap();
-    println!("Done");
+    info!("Done");
     let now = Instant::now();
     let mut i:u64 = 0;
     for tx in txns {
         i += 1;
-        let out = "Tx ".to_owned() + &i.to_string()  + &"/".to_owned() + &TC.to_string() + &" Hash: ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((tx.validateTransaction() as i32).to_string());
-        print!("{}", out);
+        let result:i32 = tx.validateTransaction() as i32;
+        let out: String;
+        if result == 1 {
+            out = "Tx ".to_owned() + &i.to_string()  + &"/".to_owned() + &TC.to_string() + &" Hash: ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((result).to_string());
+            info!("{}", out);
+        } else {
+            out = "Tx ".to_owned() + &i.to_string()  + &"/".to_owned() + &TC.to_string() + &" Hash: ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((result).to_string()) + &" invalid".to_owned();
+            warn!("{}", out);
+        }
         for _ in 0..=out.len() {
             print!("{}", (8u8 as char));
         }
     }
     println!("");
-    println!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed().as_millis() / (TC as u128));
+    info!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis(), now.elapsed().as_millis() / (TC as u128));
 }
 
 
@@ -115,14 +125,11 @@ impl Transaction {
         }
         if self.access_key != self.sender_key {
             if  0 > self.amount {
-                println!("Ammount cannot be under 0");
                 return false;
             } else if self.hashReturn() != self.hash {
-                println!("Bad Hash");
                 return false;
             }
             else if self.extra.len() > 100 {
-                println!("Extra Too Big");
                 return false;
             }
              else {
