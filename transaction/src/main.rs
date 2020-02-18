@@ -26,8 +26,6 @@ fn main() {
     let mut i:u64 = 0;
     txns.iter() 
         .for_each(|tx| {
-            println!("{}", num);
-
         i += 1;
         let result:i32 = tx.validateTransaction() as i32;
         let out: String;
