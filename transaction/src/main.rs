@@ -25,7 +25,7 @@ fn write_to_csv(tc: u64, t: u64, tps: f64) -> Result<String, Box<dyn Error>> {
     wtr.write_record(&["tc", "t", "tps"])?;
     wtr.write_record(&[tc.to_string(), t.to_string(), tps.to_string()])?;
     wtr.flush()?;
-    Ok("Wrote to csv")
+    Ok("Wrote to csv".to_string())
 }
 
 fn main() {
