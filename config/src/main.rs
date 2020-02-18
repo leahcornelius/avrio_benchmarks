@@ -101,6 +101,7 @@ fn main() {
   let mut config_new = config();
   config_new.ip_host.pop();
   config_new.ip_host.push(12345);
+  config_new.save().unwrap();
 }
 
 impl Config {
