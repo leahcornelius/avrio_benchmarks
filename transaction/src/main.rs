@@ -13,8 +13,6 @@ use ring::{
 #[macro_use]
 extern crate log;
 extern crate simple_logger;
-extern crate rayon;
-use rayon::prelude::*;
 
 static TC:u64 = 300;                                                                                              
 
@@ -42,7 +40,7 @@ fn main() {
         }
     }
     println!("");
-    info!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis() / 1000, now.elapsed() / (TC as u32));
+    info!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis() / 1000, now.elapsed().as_secs() / (TC as u32));
 }
 
 
