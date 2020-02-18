@@ -18,7 +18,7 @@ extern crate csv;
 use std::error::Error;
 use csv::Writer;
                                                                                               
-fn write_to_csv(tc: u64, t: u64, tps, f64, wtr: csv::Writer) -> Result<String, Box<dyn Error>> {
+fn write_to_csv(tc: u64, t: u64, tps: f64, wtr: csv::Writer) -> Result<String, Box<dyn Error>> {
     // When writing records without Serde, the header record is written just
     // like any other record.
     wtr.write_record(&["tc", "t", "tps"])?;
@@ -56,7 +56,7 @@ fn main() {
         }
     }
     println!("");
-        let t = now.elapsed().as_millis() / 1000;
+        let t = (now.elapsed().as_millis() / 1000) as u64;
         let tps = (((TC) as f64)/ (now.elapsed().as_secs() as f64));
     info!("Validated {:?} Transactions In {:?} Secconds. {:?} TPS", TC, t, tps);
     info!(write_to_csv(TC, t, tps, writer).unwrap());
