@@ -13,32 +13,11 @@ use ring::{
 #[macro_use]
 extern crate log;
 extern crate simple_logger;
-extern crate csv;
-use std::fs::OpenOptions;
-
-use std::error::Error;
-use csv::Writer;
-                                                                                              
-fn write_to_csv(tc: u64, t: u64, tps: f64) -> Result<String, Box<dyn Error>> {
-        let file = OpenOptions::new().append(true).open("plot.csv").unwrap();
-    let mut wtr = csv::Writer::from_writer(file);
-    wtr.write_record(&[tc.to_string(), t.to_string(), tps.to_string()])?;
-    wtr.flush()?;
-    Ok("Wrote to csv".to_string())
-}
 
 fn main() {
-            let file = OpenOptions::new().append(true).open("plot.csv").unwrap();
-    let mut wtr = csv::Writer::from_writer(file);
-    // When writing records without Serde, the header record is written just
-    // like any other record.
-    wtr.write_record(&["tc", "t", "tps"]).unwrap();
     simple_logger::init_with_level(log::Level::Info).unwrap();
     info!("Avrio Transaction Benchmark Version 0.1.0");
-    let mut trans_count:u64 = 100;
-    loop {
-    trans_count += 5;
-    let TC: u64 = trans_count;
+    let TC: u64 = 200;
     info!("Generating {:?} txns", TC);
     let txns = gen(TC).unwrap();
     info!("Done");
@@ -63,8 +42,6 @@ fn main() {
         let t = (now.elapsed().as_millis() / 1000) as u64;
         let tps = (((TC) as f64)/ (now.elapsed().as_secs() as f64));
     info!("Validated {:?} Transactions In {:?} Secconds. {:?} TPS", TC, t, tps);
-    info!("{:?}", write_to_csv(TC, t, tps).unwrap());
-    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
