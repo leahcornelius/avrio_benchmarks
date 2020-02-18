@@ -20,7 +20,7 @@ fn main() {
     info!("Avrio Transaction Benchmark Version 0.1.0");
     let mut trans_count:u64 = 100;
     loop {
-    trans_count += 1;
+    trans_count += 5;
     let TC: u64 = trans_count;
     info!("Generating {:?} txns", TC);
     let txns = gen(TC).unwrap();
@@ -43,7 +43,7 @@ fn main() {
         }
     }
     println!("");
-    info!("Validated {:?} Transactions In {:?} Secconds. {:?} TPS", TC, now.elapsed().as_millis() +1 / 1000, (((TC) as u64)/ (now.elapsed().as_secs() as u64)) as f64);
+    info!("Validated {:?} Transactions In {:?} Secconds. {:?} TPS", TC, now.elapsed().as_millis() +1 / 1000, (((TC) as f64)/ (now.elapsed().as_secs() as f64)));
 
     }
 }
