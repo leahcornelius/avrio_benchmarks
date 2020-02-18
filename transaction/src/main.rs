@@ -21,7 +21,7 @@ fn main() {
     let mut trans_count:u64 = 1;
     loop {
     trans_count += 1;
-    const TC = trans_count;
+    const TC: u64 = trans_count;
     info!("Generating {:?} txns", TC);
     let txns = gen(TC).unwrap();
     info!("Done");
