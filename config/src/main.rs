@@ -99,8 +99,8 @@ fn main() {
   let conf = Config::default();
   conf.create().unwrap();
   let mut config_new = config();
-  config_new.host.pop();
-  config_new.host.push(12345);
+  config_new.ip_host.pop();
+  config_new.ip_host.push(12345);
 }
 
 impl Config {
