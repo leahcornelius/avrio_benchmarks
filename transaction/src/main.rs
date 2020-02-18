@@ -13,6 +13,8 @@ use ring::{
 #[macro_use]
 extern crate log;
 extern crate simple_logger;
+extern crate rayon;
+user rayon::prelude::*;
 
 static TC:u64 = 300;                                                                                              
 
@@ -24,7 +26,7 @@ fn main() {
     info!("Done");
     let now = Instant::now();
     let mut i:u64 = 0;
-    txns.iter() 
+    txns.par_iter() 
         .for_each(|tx| {
         i += 1;
         let result:i32 = tx.validateTransaction() as i32;
