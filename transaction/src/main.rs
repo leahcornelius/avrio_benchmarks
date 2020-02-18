@@ -14,6 +14,7 @@ use ring::{
 extern crate log;
 extern crate simple_logger;
 extern crate csv;
+use std::fs::OpenOptions;
 
 use std::error::Error;
 use csv::Writer;
