@@ -18,7 +18,8 @@ extern crate csv;
 use std::error::Error;
 use csv::Writer;
                                                                                               
-fn write_to_csv(tc: u64, t: u64, tps: f64, wtr: Writer) -> Result<String, Box<dyn Error>> {
+fn write_to_csv(tc: u64, t: u64, tps: f64) -> Result<String, Box<dyn Error>> {
+    let mut wtr = csv::Writer::from_path("plot.csv");
     // When writing records without Serde, the header record is written just
     // like any other record.
     wtr.write_record(&["tc", "t", "tps"])?;
@@ -29,7 +30,6 @@ fn write_to_csv(tc: u64, t: u64, tps: f64, wtr: Writer) -> Result<String, Box<dy
 
 fn main() {
     simple_logger::init_with_level(log::Level::Info).unwrap();
-    let mut writer = csv::Writer::from_path("plot.csv");
     info!("Avrio Transaction Benchmark Version 0.1.0");
     let mut trans_count:u64 = 100;
     loop {
