@@ -13,12 +13,15 @@ use ring::{
 #[macro_use]
 extern crate log;
 extern crate simple_logger;
-
-static TC:u64 = 300;                                                                                              
+                                                                                              
 
 fn main() {
     simple_logger::init_with_level(log::Level::Info).unwrap();
     info!("Avrio Transaction Benchmark Version 0.1.0");
+    let mut trans_count:u64 = 1;
+    loop {
+    trans_count += 1;
+    let TC = &trans_count;
     info!("Generating {:?} txns", TC);
     let txns = gen(TC).unwrap();
     info!("Done");
@@ -40,9 +43,10 @@ fn main() {
         }
     }
     println!("");
-    info!("Validated {:?} Transactions In {:?} Milliecconds. {:?} TPS", TC, now.elapsed().as_millis() / 1000, (TC as u64)/ now.elapsed().as_secs());
-}
+    info!("Validated {:?} Transactions In {:?} Secconds. {:?} TPS", TC, now.elapsed().as_millis() / 1000, (TC as u64)/ now.elapsed().as_secs());
 
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Transaction {
