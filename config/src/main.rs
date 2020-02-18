@@ -98,9 +98,9 @@ fn main() {
   info!("Config Test Version 0.1.0"); 
   let conf = Config::default();
   conf.create().unwrap();
-    for x in config() {
-        info!("{:?}", x);
-    }
+  let mut config_new = config();
+  config_new.host.pop();
+  config_new.host.push(12345);
 }
 
 impl Config {
