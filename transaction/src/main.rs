@@ -14,7 +14,7 @@ use ring::{
 extern crate log;
 extern crate simple_logger;
 extern crate rayon;
-user rayon::prelude::*;
+use rayon::prelude::*;
 
 static TC:u64 = 300;                                                                                              
 
