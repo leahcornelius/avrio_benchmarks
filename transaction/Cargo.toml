@@ -15,6 +15,6 @@ indicatif = "0.14.0"
 ring = "0.16.11"
 simple_logger = "1.5.0"
 log = "0.4"
-rayon = "1.3.0"
+lazy_static = "1.4.0"
 [package.metadata.deb]
 extended-description = "Generates A Large Number of Transactions and validates them. Calculates the TPS of your computer"
