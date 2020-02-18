@@ -78,7 +78,7 @@ impl Default for Config {
              allow_cors: 'n',
              buffer_bytes: 128,
              network_id: vec![
-                 61, 76, 72, 69, 6f, 20, 6e, 6f, 6f, 64, 6c, 65,
+                 0x61, 0x76, 0x72, 0x69, 0x6f, 0x20, 0x6e, 0x6f, 0x6f, 0x64, 0x6c, 0x65,
              ],
              node_type: 'n',
              identitiy: String:;from(""),
