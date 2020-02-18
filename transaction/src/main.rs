@@ -43,7 +43,7 @@ fn main() {
         }
     }
     println!("");
-    info!("Validated {:?} Transactions In {:?} Secconds. {:?} TPS", TC, now.elapsed().as_millis() / 1000, (TC as u64)/ now.elapsed().as_secs()+ 1);
+    info!("Validated {:?} Transactions In {:?} Secconds. {:?} TPS", TC, now.elapsed().as_millis() +1 / 1000, (TC as u64)/ (now.elapsed().as_secs()+ 1));
 
     }
 }
