@@ -26,7 +26,8 @@ fn write_to_csv(tc: u64, t: u64, tps: f64) -> Result<String, Box<dyn Error>> {
 }
 
 fn main() {
-    let mut wtr = csv::Writer::from_path("plot.csv").unwrap();
+    let file = OpenOptions::new().append(true).open("foo.txt");
+    let mut wtr = csv::Writer::from_writer(file).unwrap();
     // When writing records without Serde, the header record is written just
     // like any other record.
     wtr.write_record(&["tc", "t", "tps"]).unwrap();
