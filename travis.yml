@@ -1,0 +1,17 @@
+language: rust
+
+sudo: required
+
+rust:
+  - stable
+  - beta
+  - nightly
+
+matrix:
+  allow_failures:
+    - rust: nightly
+    
+
+on_success: 
+  cargo run --release --bin config
+  cargo run --release --bin transaction
