@@ -111,7 +111,7 @@ impl Config {
         Ok(())
     }
     pub fn save(&self) -> io::Result<()> { // save to exisiting/ update
-        let mut file = File::open("node.conf")?;
+        let mut file = File::create("node.conf")?;
         file.write_all(serde_json::to_string(self).unwrap().as_bytes())?;
         Ok(())
     }
