@@ -1,62 +1,23 @@
 language: rust
-
-sudo: required
-
-rust:
+rust: 
   - stable
-  - beta
-  - nightly
 
-matrix:
-matrix:
-  include:
-  - os: linux
-    dist: bionic
-    addons:
-      apt:
-        sources:
-        - sourceline: ppa:mhier/libboost-latest
-        - ubuntu-toolchain-r-test
-        packages:
-        - libboost-all-dev
-        - libssl-dev
-        - g++-8
-        - gcc-8
-    env:
-    - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
-    - LABEL="linux"
-    - _DEPLOYABLE="false"
-    - STRIP="strip"
-  - os: linux
-    dist: bionic
-    compiler: gcc
-    addons:
-      apt:
-        sources:
-        - sourceline: ppa:mhier/libboost-latest
-        - ubuntu-toolchain-r-test
-        packages:
-        - libboost-all-dev
-        - libssl-dev
-        - g++-7
-        - gcc-7
-    env:
-    - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-    - LABEL="linux-g++-7"
-    - STRIP="strip"
-  - os: linux
-    dist: bionic
-    env:
-    - MATRIX_EVAL="CC=aarch64-linux-gnu-gcc && CXX=aarch64-linux-gnu-g++"
-    - LABEL="aarch64"
-    - _DEPLOYABLE="false"
-    - STRIP="aarch64-linux-gnu-strip"
+cache:
+  cargo
 
-before_install:
-- eval $MATRIX_EVAL
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - libboost-dev
+    - clang
 
-    
+script:
+  - cargo run --release --bin config
+  - cargo run --release --bin transaction
 
-on_success: 
-  cargo run --release --bin config
-  cargo run --release --bin transaction
+env:
+  global:
+  - RUST_BACKTRACE=1
+  - CC="clang"
