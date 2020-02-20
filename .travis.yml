@@ -15,7 +15,7 @@ addons:
 
 script:
   - cargo run --release --bin config_test
-  - cargo run --release --bin transaction_bench
+  - cargo run --release --bin txn_bench
 
 env:
   global:
