@@ -14,8 +14,8 @@ addons:
     - clang
 
 script:
-  - cargo run --release --bin config
-  - cargo run --release --bin transaction
+  - cargo run --release --bin config_test
+  - cargo run --release --bin transaction_bench
 
 env:
   global:
