@@ -181,7 +181,7 @@ fn deformMsg(msg: &String) { // deforms message and excutes appropriate function
         0 => return,
         _ => (),
     }
-    msg_d.message = &String::from_utf8(hex::decode(msg_d.message).expect("failed to hex decode message")).expect("failed to convert message to string");
+    msg_d.message = String::from_utf8(hex::decode(msg_d.message).expect("failed to hex decode message")).expect("failed to convert message to string");
     match msg_d.message_type {
         0x0a => process_block(msg_d.message),
         0x0b => process_transaction(msg_d.message),
