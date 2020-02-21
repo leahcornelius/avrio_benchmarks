@@ -10,7 +10,6 @@ use std::io::{Read, Write};
 use std::net::{Shutdown, TcpListener, TcpStream, SocketAddr, IpAddr, Ipv4Addr};
 use std::thread;
 use std::str;
-use std::thread;
 extern crate hex;
 use std::error::Error;
 use std::fs::File;
@@ -45,7 +44,7 @@ pub struct PeerTracker {
     pub sent_bytes: u32,
     pub recieved_bytes: u32,
 }
-handle_client(mut stream: TcpStream) {
+fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
     let mut data = [0 as u8; 200];
     while match stream.read(&mut data) {
         Ok(_) => {
@@ -56,15 +55,16 @@ handle_client(mut stream: TcpStream) {
                         This is in the following format
                         network id, our peer id, our node type;
                         */
-                        let msg = hex::encode(self_config.network_id)
+                        let msg = hex::encode(config().network_id)
                             + ","
-                            + &self_config.identitiy
+                            + &config().identitiy
                             + ","
-                            + &self_config.node_type.to_string();
+                            + &config().node_type.to_string();
                         let _ = stream.write(formMsg(msg, 0x1a).as_bytes()); // send our handshake
                     }
+                    return Ok(());
                 }
-                _ => (),
+                _ => true,
             }
         }
         Err(_) => {
@@ -89,7 +89,7 @@ fn rec_server() -> u8 {
 
                 thread::spawn(move || {
                     // connection succeeded
-                    handle_client(stream)
+                    let _ = handle_client(stream);
                 });
             }
             Err(e) => {
@@ -189,15 +189,15 @@ fn deformMsg(msg: &String) -> Option<String> {
         return P2pdata::default();
     });
     match msg_d.message_bytes {
-        0 => return,
+        0 => return Some("none".to_string()),
         _ => (),
     }
     match msg_d.message_type {
-        0x0a => process_block(msg_d.message),
-        0x0b => process_transaction(msg_d.message),
-        0x0c => process_registration(msg_d.message),
-        0x1a => { process_handshake(msg_d.message); return "handshake" },
-        _ => warn!("Bad Messge type from peer. Message type {}. (If you ae getting, lots of these check for updates)", msg_d.message_type.to_string()),
+        0x0a => { process_block(msg_d.message); return None;},
+        0x0b => { process_transaction(msg_d.message); return None; },
+        0x0c => { process_registration(msg_d.message); return None; },
+        0x1a => { process_handshake(msg_d.message); return Some("handshake".to_string()) },
+        _ => { warn!("Bad Messge type from peer. Message type {}. (If you are getting, lots of these check for updates)", msg_d.message_type.to_string()); return None; },
     }
 }
 
