@@ -162,18 +162,20 @@ pub enum p2p_errors {
 }
 
 fn formMsg(data_s: String, data_type: u16) -> String {
-    let data = hex::encode(data_s);
     let data_len = data.len();
     let msg: P2pdata = P2pdata {
         message_bytes: data_len,
         message_type: data_type,
-        message: data,
+        message: data_s,
     };
     return serde_json::to_string(&msg).unwrap();
 }
 
 fn deformMsg(msg: &String) { // deforms message and excutes appropriate function to handle resultant data
-    let mut msg_d:P2pdata = serde_json::from_str(msg).unwrap_or_else(|e| {
+    let v = msg.split("}").collect();
+    let msg_n = &v[0] + "}".to_string();
+    drop(v);
+    let mut msg_d:P2pdata = serde_json::from_str(msg_c).unwrap_or_else(|e| {
         debug!("Bad Packets recieved from peer, packets: {}. Parsing this gave error {:?}", msg, e);
         return P2pdata::default();
     });
@@ -181,7 +183,6 @@ fn deformMsg(msg: &String) { // deforms message and excutes appropriate function
         0 => return,
         _ => (),
     }
-    msg_d.message = String::from_utf8(hex::decode(msg_d.message).expect("failed to hex decode message")).expect("failed to convert message to string");
     match msg_d.message_type {
         0x0a => process_block(msg_d.message),
         0x0b => process_transaction(msg_d.message),
