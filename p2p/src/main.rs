@@ -370,10 +370,10 @@ fn main() {
             info!("{:?}", rec_server());
         })
         .unwrap();
-    let conn = thread::Builder::new()
+    /*let conn = thread::Builder::new()
         .name("conn".to_string())
         .spawn(move || {
-            info!("Attempting connection to self");
+            info!("Attempting connection to subject");
             info!(
                 "{:?}",
                 new_connection(SocketAddr::new(
@@ -386,6 +386,7 @@ fn main() {
         })
         .unwrap();
     conn.join();
+    */
     server.join();
 }
 
