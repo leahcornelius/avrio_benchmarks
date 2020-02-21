@@ -6,10 +6,10 @@ use serde::{Deserialize, Serialize};
 extern crate unwrap;
 //extern crate avrio_config;
 use std::io::{Read, Write};
-
-use std::net::{Shutdown, TcpListener, TcpStream, SocketAddr, IpAddr, Ipv4Addr};
-use std::thread;
+use std::process;
+use std::net::{IpAddr, Ipv4Addr, Shutdown, SocketAddr, TcpListener, TcpStream};
 use std::str;
+use std::thread;
 extern crate hex;
 use std::error::Error;
 use std::fs::File;
@@ -50,18 +50,23 @@ fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
         Ok(_) => {
             match deformMsg(&String::from_utf8(data.to_vec()).unwrap()) {
                 Some(a) => {
-                    if a == "handshake".to_string() {
-                        /* we just recieved a handshake, now we send ours
-                        This is in the following format
-                        network id, our peer id, our node type;
-                        */
-                        let msg = hex::encode(config().network_id)
-                            + ","
-                            + &config().identitiy
-                            + ","
-                            + &config().node_type.to_string();
-                        let _ = stream.write(formMsg(msg, 0x1a).as_bytes()); // send our handshake
-                    }
+                    /* we just recieved a handshake, now we send ours
+                    This is in the following format
+                    network id, our peer id, our node type;
+                    */
+                    let msg = hex::encode(config().network_id)
+                        + "*"
+                        + &config().identitiy
+                        + "*"
+                        + &config().node_type.to_string();
+                    info!("Our handshake: {}", msg);
+                    //info!("The message they will recieve {}", formMsg(msg.to_owned(), 0x1a));
+                    let d = stream.flush();
+                    // info!("{:?}", d);
+                    let a = stream.write_all(formMsg(msg.to_owned(), 0x1a).as_bytes()); // send our handshake
+                                                                                        //  info!("{:?}, {:?}", a, formMsg(msg.to_owned(), 0x1a).len());
+                    let b = stream.flush();
+                    // info!("{:?}", b);
                     return Ok(());
                 }
                 _ => true,
@@ -93,10 +98,7 @@ fn rec_server() -> u8 {
                 });
             }
             Err(e) => {
-                warn!(
-                    "handling peer connection to peer resulted in  error: {:?}",
-                    e
-                );
+                warn!("handling peer connection to peer resulted in  error: {}", e);
                 /* connection failed */
             }
         }
@@ -119,10 +121,42 @@ fn new_connection(socket: SocketAddr) -> Result<Peer, Box<dyn Error>> {
         + &self_config.identitiy
         + "*"
         + &self_config.node_type.to_string();
-    let _ = stream.write(formMsg(msg,0x1a).as_bytes()); // send our handshake
-    let mut buffer = [0, 200];
-    let _ = stream.read(&mut buffer);
-    let pid: String = process_handshake(String::from_utf8(buffer.to_vec())?)?;
+    let _ = stream.write(formMsg(msg, 0x1a).as_bytes()); // send our handshake
+    let mut buffer_n = [0; 200];
+    //error!("{:?}", buffer_n.len());
+    let read = stream.read(&mut buffer_n);
+    match read {
+        Ok(0) => {
+            error!("Got No Data, retrying");
+            let read_retry = stream.read(&mut buffer_n);
+            match read_retry {
+                Ok(0) => {
+                    warn!("Got No Data on retry.");
+                    return Err("no data read".into());
+                }
+                Ok(_) => {
+                    info!("Retry worked");
+                }
+                _ => warn!("Failed"),
+            }
+        }
+        _ => {}
+    }
+    trace!("stream read = {:?}", read);
+    debug!(
+        "recived handshake, as string {}",
+        String::from_utf8(buffer_n.to_vec()).unwrap()
+    );
+    let pid: String;
+    match deformMsg(&String::from_utf8(buffer_n.to_vec())?) {
+        Some(x) => {
+            pid = x;
+        }
+        None => {
+            warn!("Got no Id from peer");
+            return Err("Got no id".into());
+        }
+    };
     let mut info = PeerTracker {
         sent_bytes: 200,
         recieved_bytes: 200,
@@ -132,6 +166,10 @@ fn new_connection(socket: SocketAddr) -> Result<Peer, Box<dyn Error>> {
         socket,
         info,
     });
+}
+
+fn process_message(s: String) {
+    info!("Message:{}", s);
 }
 
 fn process_block(s: String) {
@@ -147,10 +185,22 @@ fn process_registration(s: String) {
 }
 
 fn process_handshake(s: String) -> Result<String, String> {
+    trace!("Handshake: {}", s);
     let id: String;
     let network_id_hex = hex::encode(config().network_id);
+    let network_id_hex_len = network_id_hex.len();
+    if s.len() < network_id_hex_len {
+        warn!(
+            "Bad handshake recived from peer (too short. Len: {}, Should be: {}), handshake: {}",
+            s.len(),
+            network_id_hex_len,
+            s
+        );
+        //return Err("Handshake too short".to_string());
+    }
     let peer_network_id_hex: &String = &s[0..network_id_hex.len()].to_string();
     if network_id_hex != peer_network_id_hex.to_owned() {
+        debug!("Recived erroness network id {}", peer_network_id_hex);
         return Err(String::from("Incorrect network id"));
     } else {
         let val = s[peer_network_id_hex.len() + 1..s.len()].to_string();
@@ -158,7 +208,7 @@ fn process_handshake(s: String) -> Result<String, String> {
         let v: Vec<&str> = val.split("*").collect();
         id = v[0].to_string();
     }
-    info!("{:?}", id);
+    info!("Handshook with peer, gave id {}", id);
     return Ok(id);
 }
 
@@ -183,9 +233,13 @@ fn deformMsg(msg: &String) -> Option<String> {
     // deforms message and excutes appropriate function to handle resultant data
     let v: Vec<&str> = msg.split("}").collect();
     let msg_c = v[0].to_string() + &"}".to_string();
+    trace!("recive: {}", msg_c);
     drop(v);
-    let mut msg_d:P2pdata = serde_json::from_str(&msg_c).unwrap_or_else(|e| {
-        debug!("Bad Packets recieved from peer, packets: {}. Parsing this gave error {:?}", msg, e);
+    let mut msg_d: P2pdata = serde_json::from_str(&msg_c).unwrap_or_else(|e| {
+        debug!(
+            "Bad Packets recieved from peer, packets: {}. Parsing this gave error: {}",
+            msg, e
+        );
         return P2pdata::default();
     });
     match msg_d.message_bytes {
@@ -193,11 +247,25 @@ fn deformMsg(msg: &String) -> Option<String> {
         _ => (),
     }
     match msg_d.message_type {
-        0x0a => { process_block(msg_d.message); return None;},
-        0x0b => { process_transaction(msg_d.message); return None; },
-        0x0c => { process_registration(msg_d.message); return None; },
-        0x1a => { process_handshake(msg_d.message); return Some("handshake".to_string()) },
-        _ => { warn!("Bad Messge type from peer. Message type {}. (If you are getting, lots of these check for updates)", msg_d.message_type.to_string()); return None; },
+        0x0a => {
+            process_block(msg_d.message);
+            return None;
+        }
+        0x0b => {
+            process_transaction(msg_d.message);
+            return None;
+        }
+        0x0c => {
+            process_registration(msg_d.message);
+            return None;
+        }
+        0x1a => {
+            return Some(process_handshake(msg_d.message).unwrap());
+        }
+        _ => {
+            warn!("Bad Messge type from peer. Message type {}. (If you are getting, lots of these check for updates)", msg_d.message_type.to_string());
+            return None;
+        }
     }
 }
 
@@ -248,60 +316,69 @@ pub fn config() -> Config {
 }
 
 impl Default for Config {
-    fn default () -> Config {
-        Config
-        {
-             version_major: 0,
-             version_breaking: 0,
-             version_minor: 1,
-             coin_name: String::from("Avrio"),
-             node_drop_off_threshold: 30,
-             decimal_places: 4,
-             max_connections: 50,
-             max_threads: 4,
-             chain_key: "".to_string(),
-             state: 0,
-             ip_host: vec![127,0,0,1,12345],
-             seednodes: vec![
-                 vec![127,0,0,1],
-                 vec![127,0,0,1],
-             ],
-             ignore_minor_updates: false,
-             p2p_port: 12345,
-             rpc_port: 54321,
-             allow_cors: 'n',
-             buffer_bytes: 200,
-             network_id: vec![
-                 0x61, 0x76, 0x72, 0x69, 0x6f, 0x20, 0x6e, 0x6f, 0x6f, 0x64, 0x6c, 0x65,
-             ],
-             node_type: 'n',
-             identitiy: hex::encode(String::from("blablabla")),
-             key_file_path: "wallet.keys".to_string(),
-             log_level: 2, // 0,1,2,3,4,5 trace, debug, info, warn, error, fatal respectivly
-             min_intrest: 0.5,
-             max_intrest: 3.0,
-             max_reward: 25000,
-             min_vote: 65, // min vote to not be banned
-             probatory_epoch_count: 10,
+    fn default() -> Config {
+        Config {
+            version_major: 0,
+            version_breaking: 0,
+            version_minor: 1,
+            coin_name: String::from("Avrio"),
+            node_drop_off_threshold: 30,
+            decimal_places: 4,
+            max_connections: 50,
+            max_threads: 4,
+            chain_key: "".to_string(),
+            state: 0,
+            ip_host: vec![127, 0, 0, 1, 12345],
+            seednodes: vec![vec![127, 0, 0, 1], vec![127, 0, 0, 1]],
+            ignore_minor_updates: false,
+            p2p_port: 12345,
+            rpc_port: 54321,
+            allow_cors: 'n',
+            buffer_bytes: 200,
+            network_id: vec![
+                0x61, 0x76, 0x72, 0x69, 0x6f, 0x20, 0x6e, 0x6f, 0x6f, 0x64, 0x6c, 0x65,
+            ],
+            node_type: 'n',
+            identitiy: hex::encode(String::from("blablabla")),
+            key_file_path: "wallet.keys".to_string(),
+            log_level: 2, // 0,1,2,3,4,5 trace, debug, info, warn, error, fatal respectivly
+            min_intrest: 0.5,
+            max_intrest: 3.0,
+            max_reward: 25000,
+            min_vote: 65, // min vote to not be banned
+            probatory_epoch_count: 10,
         }
     }
 }
 
 fn main() {
-  simple_logger::init_with_level(log::Level::Debug).unwrap();
-  info!("p2p Test Version 0.1.0"); 
-  let conf = Config::default();
-  conf.create().unwrap();
-  let server = thread::spawn(move || {
-    info!("{:?}", rec_server());
-  });
-  let conn = thread::spawn(move || {
-    info!("Attempting connection to self");
-    info!("{:?}", new_connection(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 56789)));
-    info!("Done");
-  });
-  conn.join();
-  server.join();
+    simple_logger::init_with_level(log::Level::Info).unwrap();
+    info!("p2p Test Version 0.1.0");
+    let conf = Config::default();
+    conf.create().unwrap();
+    let server = thread::Builder::new()
+        .name("server".to_string())
+        .spawn(move || {
+            info!("{:?}", rec_server());
+        })
+        .unwrap();
+    let conn = thread::Builder::new()
+        .name("conn".to_string())
+        .spawn(move || {
+            info!("Attempting connection to self");
+            info!(
+                "{:?}",
+                new_connection(SocketAddr::new(
+                    IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
+                    56789
+                ))
+            );
+            info!("Done");
+            process::exit(0x0100);
+        })
+        .unwrap();
+    conn.join();
+    server.join();
 }
 
 impl Config {
