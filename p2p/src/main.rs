@@ -283,7 +283,7 @@ fn main() {
   conf.create().unwrap();
   info!("{:?}", rec_server());
   info!("Attempting connection to self");
-  info!("{:?}", new_connection(SocketAddr::new("127.0.0.1:54321"));
+  info!("{:?}", new_connection(SocketAddr::new("127.0.0.1:54321")));
 }
 
 impl Config {
