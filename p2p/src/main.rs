@@ -150,6 +150,7 @@ fn process_handshake(s: String) -> Result<String, String> {
         let v: Vec<&str> = val.split("*").collect();
         id = v[0].to_string();
     }
+    info!("{:?}", id);
     return Ok(id);
 }
 
