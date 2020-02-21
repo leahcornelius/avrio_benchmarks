@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 extern crate unwrap;
 //extern crate avrio_config;
 use std::io::{Read, Write};
-use std::net::{Shutdown, TcpListener, TcpStream, SocketAddr, Ipv4Addr};
+use std::net::{Shutdown, TcpListener, TcpStream, SocketAddr, Ipv4Addr, Ipv4Addr};
 use std::thread;
 use std::str;
 extern crate hex;
@@ -33,7 +33,7 @@ pub struct Peer {
     pub info: PeerTracker, // stats about recived and sent bytes from this peer
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Tracker {
     pub sent_bytes: u32,
     pub received_bytes: u32,
@@ -41,7 +41,7 @@ pub struct Tracker {
     pub uptime: u64,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct PeerTracker {
     pub sent_bytes: u32,
     pub recieved_bytes: u32,
