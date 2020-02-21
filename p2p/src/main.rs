@@ -62,14 +62,11 @@ fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
                     info!("Our handshake: {}", msg);
                     //info!("The message they will recieve {}", formMsg(msg.to_owned(), 0x1a));
                     let d = stream.flush();
-                    // info!("{:?}", d);
                     let a = stream.write_all(formMsg(msg.to_owned(), 0x1a).as_bytes()); // send our handshake
-                                                                                        //  info!("{:?}, {:?}", a, formMsg(msg.to_owned(), 0x1a).len());
                     let b = stream.flush();
-                    // info!("{:?}", b);
                     return Ok(());
                 }
-                _ => true,
+                _ => { trace!("message not handshake"); return Ok(()); },
             }
         }
         Err(_) => {
@@ -90,7 +87,7 @@ fn rec_server() -> u8 {
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
-                info!("New incoming connection: {}", stream.peer_addr().unwrap());
+                info!("New incoming connection to peer: {}", stream.peer_addr().unwrap());
 
                 thread::spawn(move || {
                     // connection succeeded
@@ -157,6 +154,7 @@ fn new_connection(socket: SocketAddr) -> Result<Peer, Box<dyn Error>> {
             return Err("Got no id".into());
         }
     };
+    sendData("hello".to_string(), &mut stream,  0x01);
     let mut info = PeerTracker {
         sent_bytes: 200,
         recieved_bytes: 200,
@@ -219,6 +217,12 @@ pub enum p2p_errors {
     Other,
 }
 
+fn sendData(data: String, peer: &mut TcpStream, msg_type: u16) { // This function takes some data as a string and places it into a struct before sending to the peer
+    let data_s: String = formMsg(data, msg_type);
+    let sent = peer.write_all(data_s.as_bytes());
+
+}
+
 fn formMsg(data_s: String, data_type: u16) -> String {
     let data_len = data_s.len();
     let msg: P2pdata = P2pdata {
@@ -247,6 +251,10 @@ fn deformMsg(msg: &String) -> Option<String> {
         _ => (),
     }
     match msg_d.message_type {
+        0x01 => {
+            process_message(msg_d.message);
+            return None;
+        },
         0x0a => {
             process_block(msg_d.message);
             return None;
@@ -352,7 +360,7 @@ impl Default for Config {
 }
 
 fn main() {
-    simple_logger::init_with_level(log::Level::Info).unwrap();
+    simple_logger::init_with_level(log::Level::Trace).unwrap();
     info!("p2p Test Version 0.1.0");
     let conf = Config::default();
     conf.create().unwrap();
@@ -374,7 +382,7 @@ fn main() {
                 ))
             );
             info!("Done");
-            process::exit(0x0100);
+            //process::exit(0x0100);
         })
         .unwrap();
     conn.join();
