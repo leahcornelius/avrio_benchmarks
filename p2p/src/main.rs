@@ -107,9 +107,9 @@ fn new_connection(socket: SocketAddr) -> Result<Peer,Box<dyn Error>> {
     The recipitent then verifyes this then they send the same hand shake back to us;
     */
     let msg = hex::encode(self_config.network_id)
-        + ","
+        + "*"
         + &self_config.identitiy
-        + ","
+        + "*"
         + &self_config.node_type.to_string();
     let _ = stream.write(formMsg(msg,0x1a).as_bytes()); // send our handshake
     let mut buffer = [0, 200];
@@ -147,7 +147,7 @@ fn process_handshake(s: String) -> Result<String, String> {
     } else {
         let val = s[peer_network_id_hex.len()+1..s.len()].to_string();
         drop(s);
-        let v: Vec<&str> = val.split(",").collect();
+        let v: Vec<&str> = val.split("*").collect();
         id = v[0].to_string();
     }
     return Ok(id);
