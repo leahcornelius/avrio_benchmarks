@@ -26,6 +26,7 @@ pub struct P2pdata {
 }
 
 
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Peer {
     pub id: String,
     pub socket: SocketAddr,     // socket (ip, port) of a peer
@@ -277,13 +278,14 @@ impl Default for Config {
 }
 
 fn main() {
-  simple_logger::init_with_level(log::Level::Info).unwrap();
+  simple_logger::init_with_level(log::Level::Debug).unwrap();
   info!("p2p Test Version 0.1.0"); 
   let conf = Config::default();
   conf.create().unwrap();
   info!("{:?}", rec_server());
   info!("Attempting connection to self");
-  info!("{:?}", new_connection(SocketAddr::new("127.0.0.1:54321")));
+  info!("{:?}", new_connection(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 54321)));
+  info!("Done");
 }
 
 impl Config {
