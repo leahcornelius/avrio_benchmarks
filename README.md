@@ -1,5 +1,5 @@
 # Avrio Benchmarks
-![Build Status] (https://api.travis-ci.com/leocornelius/avrio_benchmarks.svg)
+[![Build Status] (https://api.travis-ci.com/leocornelius/avrio_benchmarks.svg)]
 This repo contains benchmarks for diffrent aspects or avrios code. 
 First ensure you have installed rust and git
 Then run
