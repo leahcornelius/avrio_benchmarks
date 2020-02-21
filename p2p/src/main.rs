@@ -282,14 +282,16 @@ fn main() {
   info!("p2p Test Version 0.1.0"); 
   let conf = Config::default();
   conf.create().unwrap();
-  thread::spawn(move || {
+  let server = thread::spawn(move || {
     info!("{:?}", rec_server());
   });
-  thread::spawn(move || {
+  let conn = thread::spawn(move || {
     info!("Attempting connection to self");
     info!("{:?}", new_connection(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 54321)));
     info!("Done");
   });
+  conn.join();
+  server.join();
 }
 
 impl Config {
