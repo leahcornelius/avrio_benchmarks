@@ -26,7 +26,7 @@ pub struct P2pdata {
 }
 
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Peer {
     pub id: String,
     pub socket: SocketAddr,     // socket (ip, port) of a peer
