@@ -47,7 +47,7 @@ pub struct PeerTracker {
     pub recieved_bytes: u32,
 }
 fn handle_client(mut stream: TcpStream) {
-    let mut data = [0 as u8; 300];
+    let mut data = [0 as u8; 200];
     while match stream.read(&mut data) {
         Ok(_) => {
             deformMsg(&String::from_utf8(data.to_vec()).unwrap());
@@ -112,12 +112,12 @@ fn new_connection(socket: SocketAddr) -> Result<Peer,Box<dyn Error>> {
         + ","
         + &self_config.node_type.to_string();
     let _ = stream.write(formMsg(msg,0x1a).as_bytes()); // send our handshake
-    let mut buffer = [0, 300];
+    let mut buffer = [0, 200];
     let _ = stream.read(&mut buffer);
     let pid: String = process_handshake(String::from_utf8(buffer.to_vec())?)?;
     let mut info = PeerTracker {
-        sent_bytes: 300,
-        recieved_bytes: 300,
+        sent_bytes: 200,
+        recieved_bytes: 200,
     };
     return Ok(Peer {
         id: pid,
@@ -260,7 +260,7 @@ impl Default for Config {
              p2p_port: 12345,
              rpc_port: 54321,
              allow_cors: 'n',
-             buffer_bytes: 300,
+             buffer_bytes: 200,
              network_id: vec![
                  0x61, 0x76, 0x72, 0x69, 0x6f, 0x20, 0x6e, 0x6f, 0x6f, 0x64, 0x6c, 0x65,
              ],
