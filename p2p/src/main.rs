@@ -287,7 +287,7 @@ fn main() {
   });
   let conn = thread::spawn(move || {
     info!("Attempting connection to self");
-    info!("{:?}", new_connection(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 54321)));
+    info!("{:?}", new_connection(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 56789)));
     info!("Done");
   });
   conn.join();
