@@ -173,7 +173,7 @@ fn formMsg(data_s: String, data_type: u16) -> String {
 }
 
 fn deformMsg(msg: &String) { // deforms message and excutes appropriate function to handle resultant data
-    let msg = &hex::decode(msg).expect("failed to hex decode message");
+    let msg = &String::from_utf8(hex::decode(msg).expect("failed to hex decode message"));
     let mut msg_d:P2pdata = serde_json::from_str(msg).unwrap_or_else(|e| {
         debug!("Bad Packets recieved from peer, packets: {}. Parsing this gave error {:?}", msg, e);
         return P2pdata::default();
