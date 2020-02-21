@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 extern crate unwrap;
 //extern crate avrio_config;
 use std::io::{Read, Write};
-use std::net::{Shutdown, SocketAddr, TcpListener, TcpStream};
+
+use std::net::{Shutdown, TcpListener, TcpStream, SocketAddr, IpAddr, Ipv4Addr};
+use std::thread;
 use std::str;
 use std::thread;
 extern crate hex;
@@ -23,13 +25,14 @@ pub struct P2pdata {
     pub message: String,      // The serialized data
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Peer {
     pub id: String,
     pub socket: SocketAddr, // socket (ip, port) of a peer
     pub info: PeerTracker,  // stats about recived and sent bytes from this peer
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Tracker {
     pub sent_bytes: u32,
     pub received_bytes: u32,
@@ -37,13 +40,13 @@ pub struct Tracker {
     pub uptime: u64,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct PeerTracker {
     pub sent_bytes: u32,
     pub recieved_bytes: u32,
 }
-fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Err>> {
-    let mut data = [0 as u8; 128];
+handle_client(mut stream: TcpStream) {
+    let mut data = [0 as u8; 200];
     while match stream.read(&mut data) {
         Ok(_) => {
             match deformMsg(&String::from_utf8(data.to_vec()).unwrap()) {
@@ -112,17 +115,17 @@ fn new_connection(socket: SocketAddr) -> Result<Peer, Box<dyn Error>> {
     The recipitent then verifyes this then they send the same hand shake back to us;
     */
     let msg = hex::encode(self_config.network_id)
-        + ","
+        + "*"
         + &self_config.identitiy
-        + ","
+        + "*"
         + &self_config.node_type.to_string();
-    let _ = stream.write(formMsg(msg, 0x1a).as_bytes()); // send our handshake
-    let mut buffer = [0, 128];
+    let _ = stream.write(formMsg(msg,0x1a).as_bytes()); // send our handshake
+    let mut buffer = [0, 200];
     let _ = stream.read(&mut buffer);
     let pid: String = process_handshake(String::from_utf8(buffer.to_vec())?)?;
     let mut info = PeerTracker {
-        sent_bytes: 128,
-        recieved_bytes: 128,
+        sent_bytes: 200,
+        recieved_bytes: 200,
     };
     return Ok(Peer {
         id: pid,
@@ -152,9 +155,10 @@ fn process_handshake(s: String) -> Result<String, String> {
     } else {
         let val = s[peer_network_id_hex.len() + 1..s.len()].to_string();
         drop(s);
-        let v: Vec<&str> = val.split(",").collect();
+        let v: Vec<&str> = val.split("*").collect();
         id = v[0].to_string();
     }
+    info!("{:?}", id);
     return Ok(id);
 }
 
@@ -177,11 +181,11 @@ fn formMsg(data_s: String, data_type: u16) -> String {
 
 fn deformMsg(msg: &String) -> Option<String> {
     // deforms message and excutes appropriate function to handle resultant data
-    let mut msg_d: P2pdata = serde_json::from_str(msg).unwrap_or_else(|e| {
-        debug!(
-            "Bad Packets recieved from peer, packets: {}. Parsing this gave error {:?}",
-            msg, e
-        );
+    let v: Vec<&str> = msg.split("}").collect();
+    let msg_c = v[0].to_string() + &"}".to_string();
+    drop(v);
+    let mut msg_d:P2pdata = serde_json::from_str(&msg_c).unwrap_or_else(|e| {
+        debug!("Bad Packets recieved from peer, packets: {}. Parsing this gave error {:?}", msg, e);
         return P2pdata::default();
     });
     match msg_d.message_bytes {
@@ -244,47 +248,60 @@ pub fn config() -> Config {
 }
 
 impl Default for Config {
-    fn default() -> Config {
-        Config {
-            version_major: 0,
-            version_breaking: 0,
-            version_minor: 1,
-            coin_name: String::from("Avrio"),
-            node_drop_off_threshold: 30,
-            decimal_places: 4,
-            max_connections: 50,
-            max_threads: 4,
-            chain_key: "".to_string(),
-            state: 0,
-            ip_host: vec![127, 0, 0, 1, 12345],
-            seednodes: vec![vec![127, 0, 0, 1], vec![127, 0, 0, 1]],
-            ignore_minor_updates: false,
-            p2p_port: 12345,
-            rpc_port: 54321,
-            allow_cors: 'n',
-            buffer_bytes: 128,
-            network_id: vec![
-                0x61, 0x76, 0x72, 0x69, 0x6f, 0x20, 0x6e, 0x6f, 0x6f, 0x64, 0x6c, 0x65,
-            ],
-            node_type: 'n',
-            identitiy: String::from(""),
-            key_file_path: "wallet.keys".to_string(),
-            log_level: 2, // 0,1,2,3,4,5 trace, debug, info, warn, error, fatal respectivly
-            min_intrest: 0.5,
-            max_intrest: 3.0,
-            max_reward: 25000,
-            min_vote: 65, // min vote to not be banned
-            probatory_epoch_count: 10,
+    fn default () -> Config {
+        Config
+        {
+             version_major: 0,
+             version_breaking: 0,
+             version_minor: 1,
+             coin_name: String::from("Avrio"),
+             node_drop_off_threshold: 30,
+             decimal_places: 4,
+             max_connections: 50,
+             max_threads: 4,
+             chain_key: "".to_string(),
+             state: 0,
+             ip_host: vec![127,0,0,1,12345],
+             seednodes: vec![
+                 vec![127,0,0,1],
+                 vec![127,0,0,1],
+             ],
+             ignore_minor_updates: false,
+             p2p_port: 12345,
+             rpc_port: 54321,
+             allow_cors: 'n',
+             buffer_bytes: 200,
+             network_id: vec![
+                 0x61, 0x76, 0x72, 0x69, 0x6f, 0x20, 0x6e, 0x6f, 0x6f, 0x64, 0x6c, 0x65,
+             ],
+             node_type: 'n',
+             identitiy: hex::encode(String::from("blablabla")),
+             key_file_path: "wallet.keys".to_string(),
+             log_level: 2, // 0,1,2,3,4,5 trace, debug, info, warn, error, fatal respectivly
+             min_intrest: 0.5,
+             max_intrest: 3.0,
+             max_reward: 25000,
+             min_vote: 65, // min vote to not be banned
+             probatory_epoch_count: 10,
         }
     }
 }
 
 fn main() {
-    simple_logger::init_with_level(log::Level::Info).unwrap();
-    info!("p2p Test Version 0.1.0");
-    let conf = Config::default();
-    conf.create().unwrap();
+  simple_logger::init_with_level(log::Level::Debug).unwrap();
+  info!("p2p Test Version 0.1.0"); 
+  let conf = Config::default();
+  conf.create().unwrap();
+  let server = thread::spawn(move || {
     info!("{:?}", rec_server());
+  });
+  let conn = thread::spawn(move || {
+    info!("Attempting connection to self");
+    info!("{:?}", new_connection(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 56789)));
+    info!("Done");
+  });
+  conn.join();
+  server.join();
 }
 
 impl Config {
