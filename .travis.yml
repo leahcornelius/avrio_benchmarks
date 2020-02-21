@@ -14,8 +14,8 @@ addons:
     - clang
 
 script:
-  - cargo run --release --bin config_test
-  - cargo run --release --bin txn_bench
+  #- cargo run --release --bin config_test
+  #- cargo run --release --bin txn_bench
   - cargo run --release --bin avrio_p2p
 
 env:
