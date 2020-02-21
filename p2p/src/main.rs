@@ -162,7 +162,7 @@ pub enum p2p_errors {
 }
 
 fn formMsg(data_s: String, data_type: u16) -> String {
-    let data_len = data.len();
+    let data_len = data_s.len();
     let msg: P2pdata = P2pdata {
         message_bytes: data_len,
         message_type: data_type,
@@ -172,8 +172,8 @@ fn formMsg(data_s: String, data_type: u16) -> String {
 }
 
 fn deformMsg(msg: &String) { // deforms message and excutes appropriate function to handle resultant data
-    let v = msg.split("}").collect();
-    let msg_n = &v[0] + "}".to_string();
+    let v: Vec<&str> = msg.split("}").collect();
+    let msg_c = v[0] + "}".to_string();
     drop(v);
     let mut msg_d:P2pdata = serde_json::from_str(msg_c).unwrap_or_else(|e| {
         debug!("Bad Packets recieved from peer, packets: {}. Parsing this gave error {:?}", msg, e);
