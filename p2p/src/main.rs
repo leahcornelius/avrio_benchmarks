@@ -175,7 +175,7 @@ fn deformMsg(msg: &String) { // deforms message and excutes appropriate function
     let v: Vec<&str> = msg.split("}").collect();
     let msg_c = v[0].to_string() + &"}".to_string();
     drop(v);
-    let mut msg_d:P2pdata = serde_json::from_str(msg_c).unwrap_or_else(|e| {
+    let mut msg_d:P2pdata = serde_json::from_str(&msg_c).unwrap_or_else(|e| {
         debug!("Bad Packets recieved from peer, packets: {}. Parsing this gave error {:?}", msg, e);
         return P2pdata::default();
     });
