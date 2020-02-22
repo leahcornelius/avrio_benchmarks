@@ -46,41 +46,44 @@ pub struct PeerTracker {
 }
 fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
     loop {
-    let mut data = [0 as u8; 200];
-    while match stream.read(&mut data) {
-        Ok(_) => {
-            match deformMsg(&String::from_utf8(data.to_vec()).unwrap()) {
-                Some(a) => {
-                    /* we just recieved a handshake, now we send ours
-                    This is in the following format
-                    network id, our peer id, our node type;
-                    */
-                    let msg = hex::encode(config().network_id)
-                        + "*"
-                        + &config().identitiy
-                        + "*"
-                        + &config().node_type.to_string();
-                    info!("Our handshake: {}", msg);
-                    //info!("The message they will recieve {}", formMsg(msg.to_owned(), 0x1a));
-                    let d = stream.flush();
-                    let a = stream.write_all(formMsg(msg.to_owned(), 0x1a).as_bytes()); // send our handshake
-                    let b = stream.flush();
-                    return Ok(());
-                }
-                _ => { trace!("message not handshake"); return Ok(()); },
+        let mut data = [0 as u8; 200];
+        match stream.read(&mut data) {
+            Ok(0) => { // client has disconected
+                break;
             }
-        }
-        Err(_) => {
-            debug!(
-                "Terminating connection with {}",
-                stream.peer_addr().unwrap()
-            );
-            stream.shutdown(Shutdown::Both).unwrap();
-            false
-        }
-    } {}
+            Ok(_) => {
+                match deformMsg(&String::from_utf8(data.to_vec()).unwrap()) {
+                    Some(a) => {
+                        /* we just recieved a handshake, now we send ours
+                        This is in the following format
+                        network id, our peer id, our node type;
+                        */
+                        let msg = hex::encode(config().network_id)
+                            + "*"
+                            + &config().identitiy
+                            + "*"
+                            + &config().node_type.to_string();
+                        info!("Our handshake: {}", msg);
+                        //info!("The message they will recieve {}", formMsg(msg.to_owned(), 0x1a));
+                        let d = stream.flush();
+                        let a = stream.write_all(formMsg(msg.to_owned(), 0x1a).as_bytes()); // send our handshake
+                        let b = stream.flush();
+                        return Ok(());
+                    }
+                    _ => { return Ok(()); },
+                }
+            }
+            Err(_) => {
+                debug!(
+                    "Terminating connection with {}",
+                    stream.peer_addr().unwrap()
+                );
+                stream.shutdown(Shutdown::Both).unwrap();
+                false
+            }
+        } {}
     }
-    return Ok(());
+    Ok(());
 }
 fn rec_server() -> u8 {
     let listener = TcpListener::bind("0.0.0.0:56789").unwrap();
