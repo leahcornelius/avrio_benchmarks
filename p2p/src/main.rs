@@ -49,8 +49,7 @@ fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
         let mut data = [0 as u8; 200];
         match stream.read(&mut data) {
             Ok(0) => { // client has disconected
-                break;
-            }
+                return Ok(());
             Ok(_) => {
                 match deformMsg(&String::from_utf8(data.to_vec()).unwrap()) {
                     Some(a) => {
@@ -68,9 +67,8 @@ fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
                         let d = stream.flush();
                         let a = stream.write_all(formMsg(msg.to_owned(), 0x1a).as_bytes()); // send our handshake
                         let b = stream.flush();
-                        return Ok(());
                     }
-                    _ => { return Ok(()); },
+                    _ =>  {}
                 }
             }
             Err(_) => {
