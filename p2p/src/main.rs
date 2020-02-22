@@ -45,6 +45,7 @@ pub struct PeerTracker {
     pub recieved_bytes: u32,
 }
 fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
+    loop {
     let mut data = [0 as u8; 200];
     while match stream.read(&mut data) {
         Ok(_) => {
@@ -78,6 +79,7 @@ fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
             false
         }
     } {}
+    }
     return Ok(());
 }
 fn rec_server() -> u8 {
