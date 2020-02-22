@@ -82,7 +82,7 @@ fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
             }
         } {}
     }
-    Ok(());
+    return Ok(());
 }
 fn rec_server() -> u8 {
     let listener = TcpListener::bind("0.0.0.0:56789").unwrap();
