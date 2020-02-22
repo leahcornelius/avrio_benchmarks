@@ -50,6 +50,7 @@ fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
         match stream.read(&mut data) {
             Ok(0) => { // client has disconected
                 return Ok(());
+            }
             Ok(_) => {
                 match deformMsg(&String::from_utf8(data.to_vec()).unwrap()) {
                     Some(a) => {
