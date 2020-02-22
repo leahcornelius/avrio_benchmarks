@@ -81,9 +81,9 @@ fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
     return Ok(());
 }
 fn rec_server() -> u8 {
-    let listener = TcpListener::bind("127.0.0.1:56789").unwrap();
+    let listener = TcpListener::bind("0.0.0.0:56789").unwrap();
     // accept connections and process them, spawning a new thread for each one
-    info!("P2P Server Launched on 127.0.0.1:{}", 56789);
+    info!("P2P Server Launched on 0.0.0.0:{}", 56789);
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
