@@ -78,7 +78,7 @@ fn handle_client(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
                     stream.peer_addr().unwrap()
                 );
                 stream.shutdown(Shutdown::Both).unwrap();
-                Err("undefined".into());
+                return Err("undefined".into());
             }
         } {}
     }
