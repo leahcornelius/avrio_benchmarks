@@ -1,6 +1,6 @@
-use avrio_database::*
+use avrio_database::*;
 
-fn main.rs() {
+fn main() {
   println!("hello world");
   saveData("hi", "./database.db", "hey");
 }
