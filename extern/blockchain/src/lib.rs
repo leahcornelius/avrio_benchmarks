@@ -41,7 +41,7 @@ pub fn getBlock(chainkey: &String, height: u64) -> Block {
 }
 
 impl Header {
-    fn bytes(&self) -> Vec<u8> {
+    pub fn bytes(&self) -> Vec<u8> {
         let mut bytes = vec![];
 
         bytes.extend(self.version_major.to_string().as_bytes());
@@ -53,7 +53,7 @@ impl Header {
         bytes.extend(self.timestamp.to_string().as_bytes());
         bytes
     }
-    fn hash(&mut self) {
+    pub fn hash(&mut self) {
         // TODO
     }
 }
@@ -68,13 +68,13 @@ impl Block {
         }
         bytes
     }
-    fn hash(&mut self) {
-        // TODO
+    pub fn hash(&mut self) {
+        self.hash = cryptonight(&self.bytes(), self.bytes().len(),0)
     }
-    fn sign(&mut self) {
+    pub fn sign(&mut self) {
         //
     }
-    fn isOtherBlock(&self, OtherBlock: &Block) -> bool {
+    pub fn isOtherBlock(&self, OtherBlock: &Block) -> bool {
         self == OtherBlock
     }
 }
