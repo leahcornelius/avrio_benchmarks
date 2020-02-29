@@ -10,3 +10,4 @@ avrio_blockchain = { path = "../extern/blockchain"}
 avrio_database = { path = "../extern/database"}
 avrio_core = { path = "../extern/core"}
 cryptonight-rs = { path = "../extern/crypto/cn-rs"}
+hex = "0.4"
