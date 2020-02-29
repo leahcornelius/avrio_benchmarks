@@ -4,6 +4,7 @@ use crate::genesis::getGenesisBlock;
 use avrio_core::transaction::*;
 use serde::{Deserialize, Serialize};
 use cryptonight::cryptonight;
+extern crate hex;
 #[macro_use]
 extern crate log;
 
@@ -54,8 +55,8 @@ impl Header {
         bytes.extend(self.timestamp.to_string().as_bytes());
         bytes
     }
-    pub fn hash(&mut self) {
-        // TODO
+    pub fn hash(&self) -> String{
+        return hex::encode(cryptonight(&self.bytes(), self.bytes().len(),0));
     }
 }
 
@@ -70,10 +71,10 @@ impl Block {
         bytes
     }
     pub fn hash(&mut self) {
-        self.hash = cryptonight(&self.bytes(), self.bytes().len(),0)
+        self.header.hash = hex::encode(cryptonight(&self.bytes(), self.bytes().len(),0));
     }
     pub fn sign(&mut self) {
-        //
+        // todo
     }
     pub fn isOtherBlock(&self, OtherBlock: &Block) -> bool {
         self == OtherBlock
