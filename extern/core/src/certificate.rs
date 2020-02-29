@@ -163,7 +163,7 @@ impl Certificate {
     }
 
     pub fn checkDiff(&self, diff: &u64) -> bool {
-        if difficulty_bytes_as_u128(&self.hash.as_bytes().to_vec()) < diff.to_owned() {
+        if difficulty_bytes_as_u128(self.hash.clone().as_bytes().to_vec()) < diff.to_owned() {
             return true;
         } else {
             return false;
