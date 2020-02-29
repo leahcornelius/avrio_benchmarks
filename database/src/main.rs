@@ -19,7 +19,7 @@ fn main() {
     let i: usize = 0;
     for i in 0..=CHAIN_COUNT {
         let mut chain_thing = Chain {
-                public_key: hex::encode(cryptonight("chain-".to_string() + &i.to_string().as_bytes(), cryptonight("chain-".to_string() + &i.to_string().to_bytes().len(), 0)),
+                public_key: hex::encode(cryptonight(("chain-".to_string() + &(i.to_string())).as_bytes(), ("chain-".to_string() + &(i.to_string())).as_bytes().len(), 0)),
                 blocks: vec![],
                 digest: "".to_string(),
              };
@@ -35,7 +35,7 @@ fn main() {
                     version_breaking: 0,
                     version_minor: 1,
                     chain_key: chains[i as usize].public_key,
-                    prev_hash: hex::encode(cryptonight("prevhashforblock".to_string() + &i.to_string().as_bytes(), cryptonight("chain-".to_string() + &i.to_string().as_bytes().len(), 0).to_owned(),
+                    prev_hash: hex::encode(cryptonight(("prevblockhash-".to_string() + &(i.to_string())).as_bytes(), ("chain-".to_string() + &(i.to_string())).as_bytes().len(), 0)),                    height: block_i as u64,
                     height: block_i as u64,
                     timestamp: ts,
                 },
