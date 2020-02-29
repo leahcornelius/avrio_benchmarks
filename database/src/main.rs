@@ -47,8 +47,8 @@ fn main() {
             });
             chains[i as usize].blocks[block_i as usize].hash();
             println!(
-                "generated block: {} / {} for chain: {}",
-                block_i, BLOCKS_PER_CHAIN, chains[i as usize].public_key
+                "generated block: {} / {} for chain: {} (block {} out of {} total blocks)",
+                block_i, BLOCKS_PER_CHAIN, chains[i as usize].public_key, block_i, BLOCKS_PER_CHAIN * CHAIN_COUNT
             );
         }
     }
