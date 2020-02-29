@@ -1,6 +1,8 @@
 language: rust
 rust: 
   - stable
+  - beta
+  - nightly
 
 cache:
   cargo
@@ -18,7 +20,7 @@ script:
   - cargo run --release --bin avrio_database_test
   - cargo run --release --bin config_test
   - cargo run --release --bin txn_bench
-  - cargo run --release --bin avrio_p2p
+  # - cargo run --release --bin avrio_p2p
 
 env:
   global:
