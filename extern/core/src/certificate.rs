@@ -42,7 +42,7 @@ pub struct Certificate {
     pub signature: String,
 }
 pub fn difficulty_bytes_as_u128(v: Vec<u8>) -> u64 {
-    return v.iter().sum() as u64;
+    return v.iter().sum::<u64>();
 }
 
 pub fn generateCertificate(
