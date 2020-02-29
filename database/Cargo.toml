@@ -7,5 +7,5 @@ license = "MIT OR Apache-2.0"
 [bin]
 name = "avrio-database-test"
 source = "src/"
-[dependencies]
-avrio_database = { git: "https://github.com/avrio-project/avrio-core"
+[dependencies] 
+avrio_database = { git: "https://github.com/avrio-project/avrio-core" }
