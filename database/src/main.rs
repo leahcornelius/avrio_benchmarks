@@ -29,12 +29,13 @@ fn main() {
         let block_i: usize = 0;
         for block_i in 0..=BLOCKS_PER_CHAIN {
             let ts: u64 = (block_i + 1000000) as u64;
+            let chain_key_thing = chains[i as usize].public_key.clone();
             chains[i as usize].blocks.push(Block {
                 header: Header {
                     version_major: 0,
                     version_breaking: 0,
                     version_minor: 1,
-                    chain_key: chains[i as usize].public_key.clone(),
+                    chain_key: chain_key_thing,
                     prev_hash: hex::encode(cryptonight(("prevblockhash-".to_string() + &(i.to_string())).as_bytes(), ("chain-".to_string() + &(i.to_string())).as_bytes().len(), 0)),
                     height: block_i as u64,
                     timestamp: ts,
