@@ -19,10 +19,10 @@ fn main() {
     let i: usize = 0;
     for i in 0..=CHAIN_COUNT {
         let mut chain_thing = Chain {
-                public_key: hex::encode(cryptonight("chain-".to_string() + &i.to_string().as_bytes(), cryptonight("chain-".to_string() + &i.to_string().to_bytes().len(), 0),
+                public_key: hex::encode(cryptonight("chain-".to_string() + &i.to_string().as_bytes(), cryptonight("chain-".to_string() + &i.to_string().to_bytes().len(), 0)),
                 blocks: vec![],
                 digest: "".to_string(),
-             }
+             };
         chains.push(
             chain_thing
           );
