@@ -1,9 +1,10 @@
 extern crate avrio_blockchain;
 extern crate avrio_core;
 use avrio_blockchain::{Block, Header};
-use avrio_core::Transaction;
+use avrio_core::transaction::Transaction;
 use avrio_database::{getData, saveData};
 use cryptonight::cryptonight;
+extern crate hex;
 pub struct Chain {
     public_key: String,
     blocks: Vec<Block>,
@@ -15,9 +16,10 @@ const BLOCKS_PER_CHAIN: u8 = 10;
 
 fn main() {
     let mut chains: Vec<Chain> = vec![];
+    let i: usize = 0;
     for i in 0..=CHAIN_COUNT {
         chains.push(Chain {
-            public_key: cryptonight("chain-".to_string() + &i.to_string()),
+            public_key: cryptonight("chain-".to_string() + &i.to_string(), 0),
             blocks: vec![],
             digest: "".to_string(),
         });
@@ -49,13 +51,13 @@ fn main() {
         for block in chain.blocks {
             saveData(
                 serde_json::to_string(&block).unwrap(),
-                "./".to_string() + &block.chain_key + ".db".to_string(),
+                "./".to_string() + &block.header.chain_key + ".db".to_string(),
                 block.hash.clone(),
             );
             println!(
                 "Block: {:?}",
-                readData(
-                    "./".to_string() + &block.chain_key + ".db".to_string(),
+                getData(
+                    "./".to_string() + &block.header.chain_key + ".db".to_string(),
                     block.hash.clone(),
                 )
             );
