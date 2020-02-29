@@ -3,6 +3,7 @@ extern crate avrio_core;
 use crate::genesis::getGenesisBlock;
 use avrio_core::transaction::*;
 use serde::{Deserialize, Serialize};
+use cryptonight::cryptonight;
 #[macro_use]
 extern crate log;
 
