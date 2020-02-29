@@ -19,7 +19,7 @@ fn main() {
     let i: usize = 0;
     for i in 0..=CHAIN_COUNT {
         chains.push(Chain {
-            public_key: cryptonight("chain-".to_string() + &i.to_string(), 0),
+            public_key: hex::encode(cryptonight("chain-".to_string() + &i.to_string().as_bytes(), cryptonight("chain-".to_string() + &i.to_string().to_bytes().len(), 0),
             blocks: vec![],
             digest: "".to_string(),
         });
@@ -31,16 +31,16 @@ fn main() {
                     version_breaking: 0,
                     version_minor: 1,
                     chain_key: chains[i as usize].public_key,
-                    prev_hash: hex::encode(vec![0, 32]).to_owned(),
-                    height: block_i,
-                    timestamp: block_i + 1000000,
+                    prev_hash: hex::encode(cryptonight("prevhashforblock".to_string() + &i.to_string().as_bytes(), cryptonight("chain-".to_string() + &i.to_string().as_bytes().len(), 0).to_owned(),
+                    height: block_i as u64,
+                    timestamp: (block_i + 1000000) as u64,
                 },
                 hash: "".to_string(),
                 txns: vec![Transaction::default(); 5],
                 signature: "".to_string(),
                 node_signatures: vec!["".to_string(); 11],
             });
-            chains[i as usize].blocks[block_i].hash();
+            chains[i as usize].blocks[block_i as usize].hash();
             println!(
                 "generated block: {} / {} for chain: {}",
                 block_i, BLOCKS_PER_CHAIN, chains[i as usize].public_key
@@ -51,13 +51,13 @@ fn main() {
         for block in chain.blocks {
             saveData(
                 serde_json::to_string(&block).unwrap(),
-                "./".to_string() + &block.header.chain_key + ".db".to_string(),
+                "./".to_string() + &block.header.chain_key + &".db".to_string(),
                 block.hash.clone(),
             );
             println!(
                 "Block: {:?}",
                 getData(
-                    "./".to_string() + &block.header.chain_key + ".db".to_string(),
+                    "./".to_string() + &block.header.chain_key + &".db".to_string(),
                     block.hash.clone(),
                 )
             );
