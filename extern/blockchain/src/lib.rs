@@ -71,7 +71,7 @@ impl Block {
         bytes
     }
     pub fn hash(&mut self) {
-        self.header.hash = hex::encode(cryptonight(&self.bytes(), self.bytes().len(),0));
+        self.hash = hex::encode(cryptonight(&self.bytes(), self.bytes().len(),0));
     }
     pub fn sign(&mut self) {
         // todo
