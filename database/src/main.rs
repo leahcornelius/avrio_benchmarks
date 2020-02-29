@@ -18,13 +18,17 @@ fn main() {
     let mut chains: Vec<Chain> = vec![];
     let i: usize = 0;
     for i in 0..=CHAIN_COUNT {
-        chains.push(Chain {
-            public_key: hex::encode(cryptonight("chain-".to_string() + &i.to_string().as_bytes(), cryptonight("chain-".to_string() + &i.to_string().to_bytes().len(), 0),
-            blocks: vec![],
-            digest: "".to_string(),
-        });
+        let mut chain_thing = Chain {
+                public_key: hex::encode(cryptonight("chain-".to_string() + &i.to_string().as_bytes(), cryptonight("chain-".to_string() + &i.to_string().to_bytes().len(), 0),
+                blocks: vec![],
+                digest: "".to_string(),
+             }
+        chains.push(
+            chain_thing
+          );
         let block_i: usize = 0;
         for block_i in 0..=BLOCKS_PER_CHAIN {
+            let ts: u64 = (block_i + 1000000) as u64,
             chains[i as usize].blocks.push(Block {
                 header: Header {
                     version_major: 0,
@@ -33,7 +37,7 @@ fn main() {
                     chain_key: chains[i as usize].public_key,
                     prev_hash: hex::encode(cryptonight("prevhashforblock".to_string() + &i.to_string().as_bytes(), cryptonight("chain-".to_string() + &i.to_string().as_bytes().len(), 0).to_owned(),
                     height: block_i as u64,
-                    timestamp: (block_i + 1000000) as u64,
+                    timestamp: ts,
                 },
                 hash: "".to_string(),
                 txns: vec![Transaction::default(); 5],
