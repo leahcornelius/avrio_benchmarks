@@ -28,7 +28,7 @@ fn main() {
           );
         let block_i: usize = 0;
         for block_i in 0..=BLOCKS_PER_CHAIN {
-            let ts: u64 = (block_i + 1000000) as u64,
+            let ts: u64 = (block_i + 1000000) as u64;
             chains[i as usize].blocks.push(Block {
                 header: Header {
                     version_major: 0,
