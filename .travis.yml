@@ -14,7 +14,7 @@ addons:
     - clang
 
 script:
-  - cargo clean
+  - git pull --recurse-submodules
   - cargo run --release --bin avrio_database_test
   - cargo run --release --bin config_test
   - cargo run --release --bin txn_bench
