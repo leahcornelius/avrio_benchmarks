@@ -35,7 +35,7 @@ fn main() {
                     version_breaking: 0,
                     version_minor: 1,
                     chain_key: chains[i as usize].public_key,
-                    prev_hash: hex::encode(cryptonight(("prevblockhash-".to_string() + &(i.to_string())).as_bytes(), ("chain-".to_string() + &(i.to_string())).as_bytes().len(), 0)),                    height: block_i as u64,
+                    prev_hash: hex::encode(cryptonight(("prevblockhash-".to_string() + &(i.to_string())).as_bytes(), ("chain-".to_string() + &(i.to_string())).as_bytes().len(), 0)),
                     height: block_i as u64,
                     timestamp: ts,
                 },
