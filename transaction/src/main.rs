@@ -28,14 +28,14 @@ fn main() {
         let result:i32 = tx.validateTransaction() as i32;
         let out: String;
         if result == 1 {
-            out = "Tx ".to_owned() + &i.to_string()  + &"/".to_owned() + &TC.to_string() + &" Hash: ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((result).to_string());
-            info!("{}", out);
+            //out = "Tx ".to_owned() + &i.to_string()  + &"/".to_owned() + &TC.to_string() + &" Hash: ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((result).to_string());
+            //info!("{}", out);
         } else {
             out = "Tx ".to_owned() + &i.to_string()  + &"/".to_owned() + &TC.to_string() + &" Hash: ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((result).to_string()) + &" invalid".to_owned();
             warn!("{}", out);
         }
         for _ in 0..=out.len() {
-            print!("{}", (8u8 as char));
+            //print!("{}", (8u8 as char));
         }
     }
     println!("");
