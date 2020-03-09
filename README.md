@@ -10,6 +10,7 @@ sudo apt-get update
 sudo apt-get install -y build-essential g++-8 gcc-8 git libboost-all-dev libssl1.0-dev cmake
 git clone https://github.com/leocornelius/avrio_benchmarks
 cd avrio_benchmarks
+git submodule update --init --recursive
 ```
 To run one specific benchmark run
 ``` 
