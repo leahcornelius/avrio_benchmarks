@@ -13,8 +13,7 @@ cd avrio_benchmarks
 ```
 To run one specific benchmark run
 ``` 
-cargo build --release
-cargo run --bin benchmark_name
+cargo run --release --bin benchmark_name
 ```
 eg
 ```cargo run --bin transaction```
