@@ -34,9 +34,9 @@ fn main() {
             out = "Tx ".to_owned() + &i.to_string()  + &"/".to_owned() + &TC.to_string() + &" Hash: ".to_owned() + &tx.hash + &" valid: ".to_owned() + &((result).to_string()) + &" invalid".to_owned();
             warn!("{}", out);
         }
-        for _ in 0..=out.len() {
+        //for _ in 0..=out.len() {
             //print!("{}", (8u8 as char));
-        }
+        //}
     }
     println!("");
         let t = (now.elapsed().as_millis() / 1000) as u64;
